@@ -55,4 +55,23 @@ public class StreamTest {
         // And the tail is nil
         assertTrue("Single value stream is not nil", stream.getTail().isNil());
     }
+
+    @Test
+    public void testMap() {
+
+        final Integer EXPECTED_RESULT = 42;
+
+        // Given a stream with one string value
+        final Stream<String> stream = Stream.unit(EXPECTED_RESULT.toString());
+
+        // When mapping the string values to integer values
+        final Stream<Integer> mapped = stream.map(Integer::parseInt);
+
+        // Then the resulting stream contains one value
+        final Integer actualResult = mapped.getHead();
+        assertTrue("Multiple values in single value stream", mapped.getTail().isNil());
+
+        // And the value is the mapped value
+        assertEquals(EXPECTED_RESULT, actualResult);
+    }
 }

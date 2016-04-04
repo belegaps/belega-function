@@ -2,6 +2,7 @@ package dk.belega.util.stream;
 
 import dk.belega.util.function.Lazy;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -36,6 +37,22 @@ public interface Stream<T> {
         @Override
         public Stream<T> getTail() {
             throw new UnsupportedOperationException("Cannot call getTail() on nil list");
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // Operations
+
+        /**
+         * Map the values of this stream using the given mapping function and return it as a
+         * stream.
+         *
+         * @param mapper the mapping function
+         * @param <R> the mapped type
+         * @return the mapped stream
+         */
+        @Override
+        public <R> Stream<R> map(Function<T, R> mapper) {
+            return nil();
         }
     }
 
@@ -82,6 +99,22 @@ public interface Stream<T> {
         @Override
         public Stream<T> getTail() {
             return tail.get();
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // Operations
+
+        /**
+         * Map the values of this stream using the given mapping function and return it as a
+         * stream.
+         *
+         * @param mapper the mapping function
+         * @param <R> the mapped type
+         * @return the mapped stream
+         */
+        @Override
+        public <R> Stream<R> map(Function<T, R> mapper) {
+            return cons(() -> mapper.apply(getHead()), () -> getTail().map(mapper));
         }
     }
 
@@ -150,4 +183,8 @@ public interface Stream<T> {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Operations
 
+    /**
+     * Map the values of this stream using the given mapping function and return it as a stream.
+     */
+    <R> Stream<R> map(Function<T,R> mapper);
 }
