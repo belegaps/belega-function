@@ -5,8 +5,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -138,5 +140,47 @@ public class StreamTest extends AbstractTest {
 
         // Then the result is a stream with the mapped elements
         assertStreamEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    @Test
+    public void testFoldLeft() {
+
+        final String[] values = {
+                "first",
+                "second"
+        };
+
+        // Given a stream with two elements
+        final Stream<String> stream = Streams.of(values);
+
+        // When foldLeft'ing the values
+        final Integer actualResult = stream.foldLeft(0, (index, elem) -> {
+
+            // Then the values are given to the collector, in order
+            assertSame(values[index], elem);
+            return index + 1;
+        });
+
+        // And the return value is the result of the last call
+        assertEquals(values.length, (int)actualResult);
+    }
+
+    @Test
+    public void testAsList() {
+
+        final Object[] EXPECTED_RESULT = {
+                "first",
+                "second",
+                "third"
+        };
+
+        // Given a stream with multiple elements
+        final Stream<Object> stream = Streams.of(EXPECTED_RESULT);
+
+        // When collecting the elements as a list
+        final List<Object> actualResult = stream.asList();
+
+        // Then the result matches the order of the stream elements
+        assertEquals(Arrays.asList(EXPECTED_RESULT), actualResult);
     }
 }

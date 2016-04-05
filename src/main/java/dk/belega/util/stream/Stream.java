@@ -2,6 +2,9 @@ package dk.belega.util.stream;
 
 import dk.belega.util.function.Lazy;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -47,7 +50,7 @@ public interface Stream<T> {
          * stream.
          *
          * @param mapper the mapping function
-         * @param <R> the mapped type
+         * @param <R>    the mapped type
          * @return the mapped stream
          */
         @Override
@@ -87,6 +90,18 @@ public interface Stream<T> {
         @Override
         public Stream<T> append(Supplier<Stream<T>> tail) {
             return tail.get();
+        }
+
+        /**
+         * Fold the elements of the stream into a single value.
+         *
+         * @param seed      the seed value
+         * @param collector the function combining elements
+         * @return the combined result
+         */
+        @Override
+        public <R> R foldLeft(R seed, BiFunction<R, T, R> collector) {
+            return seed;
         }
     }
 
@@ -143,7 +158,7 @@ public interface Stream<T> {
          * stream.
          *
          * @param mapper the mapping function
-         * @param <R> the mapped type
+         * @param <R>    the mapped type
          * @return the mapped stream
          */
         @Override
@@ -183,6 +198,18 @@ public interface Stream<T> {
         @Override
         public Stream<T> append(Supplier<Stream<T>> tail) {
             return cons(this::getHead, () -> getTail().append(tail));
+        }
+
+        /**
+         * Fold the elements of the stream into a single value.
+         *
+         * @param seed      the seed value
+         * @param collector the function combining elements
+         * @return the combined result
+         */
+        @Override
+        public <R> R foldLeft(R seed, BiFunction<R, T, R> collector) {
+            return getTail().foldLeft(collector.apply(seed, getHead()), collector);
         }
     }
 
@@ -254,13 +281,13 @@ public interface Stream<T> {
     /**
      * Map the values of this stream using the given mapping function and return it as a stream.
      */
-    <R> Stream<R> map(Function<T,R> mapper);
+    <R> Stream<R> map(Function<T, R> mapper);
 
     /**
      * Map the elements of this stream into sub-streams and return the combined stream.
      *
      * @param mapper the mapping function
-     * @param <R> the resulting stream value type
+     * @param <R>    the resulting stream value type
      * @return a combined stream of mapped values
      */
     <R> Stream<R> flatMap(Function<T, Stream<R>> mapper);
@@ -281,4 +308,26 @@ public interface Stream<T> {
      * @return a combined stream
      */
     Stream<T> append(Supplier<Stream<T>> tail);
+
+    /**
+     * Fold the elements of the stream into a single value.
+     *
+     * @param seed      the seed value
+     * @param collector the function combining elements
+     * @param <R>       the result value type
+     * @return the combined result
+     */
+    <R> R foldLeft(R seed, BiFunction<R, T, R> collector);
+
+    /**
+     * Collect the elements of the stream as a list.
+     *
+     * @return list of elements
+     */
+    default List<T> asList() {
+        return foldLeft(new ArrayList<>(), (list, elem) -> {
+            list.add(elem);
+            return list;
+        });
+    }
 }
