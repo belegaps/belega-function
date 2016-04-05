@@ -74,4 +74,40 @@ public class StreamTest {
         // And the value is the mapped value
         assertEquals(EXPECTED_RESULT, actualResult);
     }
+
+    @Test
+    public void testAppend() {
+
+        final String FIRST_VALUE = "first-value";
+        final String SECOND_VALUE = "second-value";
+
+        final String[] EXPECTED_RESULT = {
+                FIRST_VALUE,
+                SECOND_VALUE
+        };
+
+        // Given two unit streams
+        final Stream<String> firstStream = Stream.unit(FIRST_VALUE);
+        final Stream<String> secondStream = Stream.unit(SECOND_VALUE);
+
+        // When appending one to the other
+        final Stream<String> actualResult = firstStream.append(secondStream);
+
+        // Then the resulting stream has two elements, in order
+        assertStreamEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation
+
+    private static <T> void assertStreamEquals(T[] expected, Stream<T> actual) {
+
+        Stream<T> s = actual;
+        for (T t : expected) {
+            assertEquals(null, t, s.getHead());
+            s = s.getTail();
+        }
+
+        assertTrue("Stream length doesn't match expected", s.isNil());
+    }
 }

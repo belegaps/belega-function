@@ -54,6 +54,17 @@ public interface Stream<T> {
         public <R> Stream<R> map(Function<T, R> mapper) {
             return nil();
         }
+
+        /**
+         * Return a stream with combined elements of this and the given stream.
+         *
+         * @param tail the stream to append
+         * @return a combined stream
+         */
+        @Override
+        public Stream<T> append(Stream<T> tail) {
+            return tail;
+        }
     }
 
     /**
@@ -115,6 +126,17 @@ public interface Stream<T> {
         @Override
         public <R> Stream<R> map(Function<T, R> mapper) {
             return cons(() -> mapper.apply(getHead()), () -> getTail().map(mapper));
+        }
+
+        /**
+         * Return a stream with combined elements of this and the given stream.
+         *
+         * @param tail the stream to append
+         * @return a combined stream
+         */
+        @Override
+        public Stream<T> append(Stream<T> tail) {
+            return cons(this::getHead, () -> getTail().append(tail));
         }
     }
 
@@ -187,4 +209,12 @@ public interface Stream<T> {
      * Map the values of this stream using the given mapping function and return it as a stream.
      */
     <R> Stream<R> map(Function<T,R> mapper);
+
+    /**
+     * Return a stream with combined elements of this and the given stream.
+     *
+     * @param tail the stream to append
+     * @return a combined stream
+     */
+    Stream<T> append(Stream<T> tail);
 }
