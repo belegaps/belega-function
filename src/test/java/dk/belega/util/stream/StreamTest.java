@@ -183,4 +183,27 @@ public class StreamTest extends AbstractTest {
         // Then the result matches the order of the stream elements
         assertEquals(Arrays.asList(EXPECTED_RESULT), actualResult);
     }
+
+    @Test
+    public void testFilter() {
+
+        final Integer[] EVEN_VALUES = { 0, 2, 4, 6, 8 };
+        final Integer[] ODD_VALUES = { 1, 3, 5, 7, 9 };
+
+        // Given a stream of integer elements
+        final Stream<Integer> stream = Streams.of(EVEN_VALUES).append(Streams.of(ODD_VALUES));
+
+        // When filtering out the odd elements
+        final Stream<Integer> actualResult = stream.filter(StreamTest::isEven);
+
+        // Then the resulting list contains only even numbers
+        assertStreamEquals(EVEN_VALUES, actualResult);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation
+
+    private static boolean isEven(Integer value) {
+        return 0 == value % 2;
+    }
 }

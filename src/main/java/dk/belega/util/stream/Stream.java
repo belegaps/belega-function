@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -102,6 +103,17 @@ public interface Stream<T> {
         @Override
         public <R> R foldLeft(R seed, BiFunction<R, T, R> collector) {
             return seed;
+        }
+
+        /**
+         * Filter the stream elements using the given predicate.
+         *
+         * @param predicate the predicate for the filter
+         * @return a filtered stream
+         */
+        @Override
+        public Stream<T> filter(Predicate<T> predicate) {
+            return nil();
         }
     }
 
@@ -211,6 +223,21 @@ public interface Stream<T> {
         public <R> R foldLeft(R seed, BiFunction<R, T, R> collector) {
             return getTail().foldLeft(collector.apply(seed, getHead()), collector);
         }
+
+        /**
+         * Filter the stream elements using the given predicate.
+         *
+         * @param predicate the predicate for the filter
+         * @return a filtered stream
+         */
+        @Override
+        public Stream<T> filter(Predicate<T> predicate) {
+            if (predicate.test(getHead())) {
+                return cons(this::getHead, () -> getTail().filter(predicate));
+            } else {
+                return getTail().filter(predicate);
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,6 +345,14 @@ public interface Stream<T> {
      * @return the combined result
      */
     <R> R foldLeft(R seed, BiFunction<R, T, R> collector);
+
+    /**
+     * Filter the stream elements using the given predicate.
+     *
+     * @param predicate the predicate for the filter
+     * @return a filtered stream
+     */
+    Stream<T> filter(Predicate<T> predicate);
 
     /**
      * Collect the elements of the stream as a list.
