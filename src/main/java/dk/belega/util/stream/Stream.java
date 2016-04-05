@@ -56,6 +56,17 @@ public interface Stream<T> {
         }
 
         /**
+         * Map the elements of this stream into sub-streams and return the combined stream.
+         *
+         * @param mapper the mapping function
+         * @return a combined stream of mapped values
+         */
+        @Override
+        public <R> Stream<R> flatMap(Function<T, Stream<R>> mapper) {
+            return nil();
+        }
+
+        /**
          * Return a stream with combined elements of this and the given stream.
          *
          * @param tail the stream to append
@@ -64,6 +75,18 @@ public interface Stream<T> {
         @Override
         public Stream<T> append(Stream<T> tail) {
             return tail;
+        }
+
+        /**
+         * Return a stream with combined elements of this and the stream returned by the given
+         * supplier.
+         *
+         * @param tail the supplier of the appended stream
+         * @return a combined stream
+         */
+        @Override
+        public Stream<T> append(Supplier<Stream<T>> tail) {
+            return tail.get();
         }
     }
 
@@ -129,6 +152,17 @@ public interface Stream<T> {
         }
 
         /**
+         * Map the elements of this stream into sub-streams and return the combined stream.
+         *
+         * @param mapper the mapping function
+         * @return a combined stream of mapped values
+         */
+        @Override
+        public <R> Stream<R> flatMap(Function<T, Stream<R>> mapper) {
+            return mapper.apply(getHead()).append(() -> getTail().flatMap(mapper));
+        }
+
+        /**
          * Return a stream with combined elements of this and the given stream.
          *
          * @param tail the stream to append
@@ -136,6 +170,18 @@ public interface Stream<T> {
          */
         @Override
         public Stream<T> append(Stream<T> tail) {
+            return cons(this::getHead, () -> getTail().append(tail));
+        }
+
+        /**
+         * Return a stream with combined elements of this and the stream returned by the given
+         * supplier.
+         *
+         * @param tail the supplier of the appended stream
+         * @return a combined stream
+         */
+        @Override
+        public Stream<T> append(Supplier<Stream<T>> tail) {
             return cons(this::getHead, () -> getTail().append(tail));
         }
     }
@@ -211,10 +257,28 @@ public interface Stream<T> {
     <R> Stream<R> map(Function<T,R> mapper);
 
     /**
+     * Map the elements of this stream into sub-streams and return the combined stream.
+     *
+     * @param mapper the mapping function
+     * @param <R> the resulting stream value type
+     * @return a combined stream of mapped values
+     */
+    <R> Stream<R> flatMap(Function<T, Stream<R>> mapper);
+
+    /**
      * Return a stream with combined elements of this and the given stream.
      *
      * @param tail the stream to append
      * @return a combined stream
      */
     Stream<T> append(Stream<T> tail);
+
+    /**
+     * Return a stream with combined elements of this and the stream returned by the given
+     * supplier.
+     *
+     * @param tail the supplier of the appended stream
+     * @return a combined stream
+     */
+    Stream<T> append(Supplier<Stream<T>> tail);
 }

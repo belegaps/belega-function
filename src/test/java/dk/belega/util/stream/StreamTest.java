@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -11,7 +13,7 @@ import static org.junit.Assert.assertTrue;
  * Unit tests for the {@link Stream} class.
  */
 @RunWith(JUnit4.class)
-public class StreamTest {
+public class StreamTest extends AbstractTest {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Test cases
@@ -97,17 +99,44 @@ public class StreamTest {
         assertStreamEquals(EXPECTED_RESULT, actualResult);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Implementation
 
-    private static <T> void assertStreamEquals(T[] expected, Stream<T> actual) {
+    @Test
+    public void testLazyAppend() {
 
-        Stream<T> s = actual;
-        for (T t : expected) {
-            assertEquals(null, t, s.getHead());
-            s = s.getTail();
-        }
+        final String FIRST_VALUE = "first-value";
+        final String SECOND_VALUE = "second-value";
 
-        assertTrue("Stream length doesn't match expected", s.isNil());
+        final String[] EXPECTED_RESULT = {
+                FIRST_VALUE,
+                SECOND_VALUE
+        };
+
+        // Given a unit stream
+        final Stream<String> firstStream = Stream.unit(FIRST_VALUE);
+
+        // When appending another unit stream to it
+        final Stream<String> actualResult = firstStream.append(() -> Stream.unit(SECOND_VALUE));
+
+        // Then the resulting stream has two elements, in order
+        assertStreamEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    @Test
+    public void testFlatMap() {
+
+        final String[] EXPECTED_RESULT = {
+                "first",
+                "second"
+        };
+
+        // Given a unit stream with a comma-separated string value
+        final Stream<String> stream =
+                Stream.unit(String.join(",", Arrays.asList(EXPECTED_RESULT)));
+
+        // When flat-mapping the stream with a mapper converting elements to streams
+        Stream<String> actualResult = stream.flatMap(str -> Streams.of(str.split(",")));
+
+        // Then the result is a stream with the mapped elements
+        assertStreamEquals(EXPECTED_RESULT, actualResult);
     }
 }
