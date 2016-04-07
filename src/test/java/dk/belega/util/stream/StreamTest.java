@@ -240,8 +240,44 @@ public class StreamTest extends AbstractTest {
         Stream<Integer> actualResult = stream.skip(5);
 
         // Then the resulting stream is still nil
-        assertTrue("skip() on nil stream returned non-nil stream", actualResult.isNil());
+        assertTrue("skip(n>=0) on nil stream returned non-nil stream", actualResult.isNil());
+    }
 
+    @Test
+    public void testSkipUnit() {
+
+        // Given a unit stream
+        final Stream<Integer> stream = Stream.unit(42);
+
+        // When skipping a non-zero number of elements
+        final Stream<Integer> actualResult = stream.skip(1);
+
+        // Then the result is the nil stream
+        assertTrue("skip(n>0) on unit stream returned non-nil stream", actualResult.isNil());
+    }
+
+    @Test
+    public void testSkip() {
+
+        final String[] SKIPPED_ELEMENTS = {
+                "first-skipped",
+                "last-skipped"
+        };
+
+        final String[] EXPECTED_RESULT = {
+                "first-element",
+                "last-element"
+        };
+
+        // Given a stream with n>m elements
+        final Stream<String> stream = Streams.of(SKIPPED_ELEMENTS)
+                .append(Streams.of(EXPECTED_RESULT));
+
+        // When skipping the first m elements
+        final Stream<String> actualResult = stream.skip(SKIPPED_ELEMENTS.length);
+
+        // Then the result is the remaining elements, starting with element m+1
+        assertStreamEquals(EXPECTED_RESULT, actualResult);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
