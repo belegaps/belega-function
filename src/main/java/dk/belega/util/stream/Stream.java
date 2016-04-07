@@ -4,6 +4,7 @@ import dk.belega.util.function.Lazy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,6 +37,16 @@ public interface Stream<T> {
         @Override
         public T getHead() {
             throw new UnsupportedOperationException("Cannot call getHead() on nil list");
+        }
+
+        /**
+         * Return the stream head, if present.
+         *
+         * @return stream head value or empty
+         */
+        @Override
+        public Optional<T> getHeadOption() {
+            return Optional.empty();
         }
 
         @Override
@@ -115,6 +126,22 @@ public interface Stream<T> {
         public Stream<T> filter(Predicate<T> predicate) {
             return nil();
         }
+
+        /**
+         * Skip the initial n elements of the stream.  If the stream contains less than n elements,
+         * then the return value is an empty stream.
+         *
+         * @param n the non-negative number of elements to skip
+         * @return always return itself (the nil stream)
+         * @throws IllegalArgumentException if n is negative
+         */
+        @Override
+        public Stream<T> skip(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n must be non-negative in call to Stream#skip()");
+            }
+            return this;
+        }
     }
 
     /**
@@ -155,6 +182,16 @@ public interface Stream<T> {
         @Override
         public T getHead() {
             return head.get();
+        }
+
+        /**
+         * Return the stream head, if present.
+         *
+         * @return stream head value or empty
+         */
+        @Override
+        public Optional<T> getHeadOption() {
+            return Optional.of(getHead());
         }
 
         @Override
@@ -238,6 +275,25 @@ public interface Stream<T> {
                 return getTail().filter(predicate);
             }
         }
+
+        /**
+         * Skip the initial n elements of the stream.  If the stream contains less than n elements,
+         * then the return value is an empty stream.
+         *
+         * @param n the non-negative number of elements to skip
+         * @return the stream of elements, starting with element n+1
+         * @throws IllegalArgumentException if n is negative
+         */
+        @Override
+        public Stream<T> skip(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n must be non-negative in call to Stream#skip()");
+            } else if (0 == n) {
+                return this;
+            } else {
+                return getTail().skip(n - 1);
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,6 +350,13 @@ public interface Stream<T> {
      * @return the head value.
      */
     T getHead();
+
+    /**
+     * Return the stream head, if present.
+     *
+     * @return stream head value or empty
+     */
+    Optional<T> getHeadOption();
 
     /**
      * Return the tail of the stream (the stream except the head value).
@@ -365,4 +428,14 @@ public interface Stream<T> {
             return list;
         });
     }
+
+    /**
+     * Skip the initial n elements of the stream.  If the stream contains less than n elements,
+     * then the return value is an empty stream.
+     *
+     * @param n the non-negative number of elements to skip
+     * @return the stream of elements, starting with element n+1
+     * @throws IllegalArgumentException if n is negative
+     */
+    Stream<T> skip(int n);
 }

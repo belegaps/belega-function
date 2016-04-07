@@ -6,10 +6,9 @@ import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for the {@link Stream} class.
@@ -198,6 +197,51 @@ public class StreamTest extends AbstractTest {
 
         // Then the resulting list contains only even numbers
         assertStreamEquals(EVEN_VALUES, actualResult);
+    }
+
+    @Test
+    public void testEmptyHeadOption() {
+
+        // Given an empty stream
+        Stream<String> emptyStream = Stream.nil();
+
+        // When getting the head value
+        final Optional<String> actualResult = emptyStream.getHeadOption();
+
+        // Then the return value is empty
+        assertFalse("Empty stream returned head option", actualResult.isPresent());
+    }
+
+    @Test
+    public void testNonEmptyHeadOption() {
+
+        final String EXPECTED_RESULT = "some-value";
+
+        // Given a non-empty stream
+        final Stream<String> nonEmptyStream = Stream.unit(EXPECTED_RESULT);
+
+        // When getting the head value
+        final Optional<String> actualResult = nonEmptyStream.getHeadOption();
+
+        // Then the return value is non-empty
+        assertTrue("Non-empty stream returned empty head", actualResult.isPresent());
+
+        // And the value is the stream's first value
+        assertEquals(EXPECTED_RESULT, actualResult.get());
+    }
+
+    @Test
+    public void testSkipNil() {
+
+        // Given a nil stream
+        Stream<Integer> stream = Stream.nil();
+
+        // When skipping any number of elements
+        Stream<Integer> actualResult = stream.skip(5);
+
+        // Then the resulting stream is still nil
+        assertTrue("skip() on nil stream returned non-nil stream", actualResult.isNil());
+
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
