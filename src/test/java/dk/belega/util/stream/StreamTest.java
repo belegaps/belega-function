@@ -280,6 +280,61 @@ public class StreamTest extends AbstractTest {
         assertStreamEquals(EXPECTED_RESULT, actualResult);
     }
 
+    @Test
+    public void testTake() {
+
+        final String[] EXPECTED_RESULT = {
+                "first-element",
+                "last-element"
+        };
+
+        final String[] IGNORED_ELEMENTS = {
+                "first-skipped",
+                "last-skipped"
+        };
+
+        // Given a stream with m>n elements
+        final Stream<String> stream = Streams.of(EXPECTED_RESULT)
+                .append(Streams.of(IGNORED_ELEMENTS));
+
+        // When taking the first n elements
+        final Stream<String> actualResult = stream.take(EXPECTED_RESULT.length);
+
+        // Then the result is a stream containing the first n elements
+        assertStreamEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    @Test
+    public void testTakeNil() {
+
+        // Given a nil stream
+        Stream<Double> stream = Stream.nil();
+
+        // When taking a non-zero number of items
+        final Stream<Double> actualResult = stream.take(1);
+
+        // Then the result is a nil stream
+        assertTrue("take(n>0) on nil stream returns non-nil stream", actualResult.isNil());
+    }
+
+    @Test
+    public void testTakeMore() {
+
+        final String[] EXPECTED_RESULT = {
+                "first-element",
+                "last-element"
+        };
+
+        // Given a stream with n elements
+        final Stream<String> stream = Streams.of(EXPECTED_RESULT);
+
+        // When taking m>n elements
+        final Stream<String> actualResult = stream.take(EXPECTED_RESULT.length + 1);
+
+        // Then the result is a stream of n elements
+        assertStreamEquals(EXPECTED_RESULT, actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

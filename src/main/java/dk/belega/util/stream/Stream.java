@@ -142,6 +142,21 @@ public interface Stream<T> {
             }
             return this;
         }
+
+        /**
+         * Return a stream containing, at most, the first n elements of this stream.
+         *
+         * @param n the maximum number of elements to take
+         * @return a stream containing the first n elements
+         * @throws IllegalArgumentException if n is negative
+         */
+        @Override
+        public Stream<T> take(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n must be non-negative in call to Stream#take()");
+            }
+            return this;
+        }
     }
 
     /**
@@ -294,6 +309,24 @@ public interface Stream<T> {
                 return getTail().skip(n - 1);
             }
         }
+
+        /**
+         * Return a stream containing, at most, the first n elements of this stream.
+         *
+         * @param n the maximum number of elements to take
+         * @return a stream containing the first n elements
+         * @throws IllegalArgumentException if n is negative
+         */
+        @Override
+        public Stream<T> take(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n must be non-negative in call to Stream#take()");
+            } else if (0 == n) {
+                return nil();
+            } else {
+                return cons(this::getHead, () -> getTail().take(n - 1));
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,4 +471,12 @@ public interface Stream<T> {
      * @throws IllegalArgumentException if n is negative
      */
     Stream<T> skip(int n);
+
+    /**
+     * Return a stream containing, at most, the first n elements of this stream.
+     * @param n the maximum number of elements to take
+     * @return a stream containing the first n elements
+     * @throws IllegalArgumentException if n is negative
+     */
+    Stream<T> take(int n);
 }
