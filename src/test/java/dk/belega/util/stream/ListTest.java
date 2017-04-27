@@ -31,4 +31,19 @@ public class ListTest {
         } catch (UnsupportedOperationException ignored) {
         }
     }
+
+    @Test
+    public void testUnit() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // Given a unit list
+        List<Integer> unitList = List.unit(EXPECTED_RESULT);
+
+        // Then the unit value is the head
+        assertEquals(EXPECTED_RESULT, unitList.getHead());
+
+        // And the tail is nil
+        assertTrue("Non-nil tail of unit list", unitList.getTail().isNil());
+    }
 }
