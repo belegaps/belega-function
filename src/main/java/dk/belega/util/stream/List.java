@@ -1,6 +1,7 @@
 package dk.belega.util.stream;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
@@ -108,6 +109,20 @@ public interface List<T> {
         @Override
         public List<T> append(List<T> other) {
             return other;
+        }
+
+        /**
+         * Apply a binary operator to all elements of this list and a start value, going from right
+         * to left.
+         *
+         * @param z  the start value
+         * @param op the binary operator
+         * @return the result of applying the binary operator to consecutive elements in the list and
+         * the start value, going from right to left.
+         */
+        @Override
+        public <Z> Z foldRight(Z z, BiFunction<T, Z, Z> op) {
+            return z;
         }
     }
 
@@ -239,6 +254,20 @@ public interface List<T> {
                 return cons(getHead(), getTail().append(other));
             }
         }
+
+        /**
+         * Apply a binary operator to all elements of this list and a start value, going from right
+         * to left.
+         *
+         * @param z  the start value
+         * @param op the binary operator
+         * @return the result of applying the binary operator to consecutive elements in the list and
+         * the start value, going from right to left.
+         */
+        @Override
+        public <Z> Z foldRight(Z z, BiFunction<T, Z, Z> op) {
+            return op.apply(getHead(), getTail().foldRight(z, op));
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,8 +364,21 @@ public interface List<T> {
     /**
      * Return a list containing all elements from this list, followed by all elements of the
      * given list.
+     *
      * @param other the list to append to this list
      * @return list containing all elements from both lists
      */
     List<T> append(List<T> other);
+
+    /**
+     * Apply a binary operator to all elements of this list and a start value, going from right
+     * to left.
+     *
+     * @param z   the start value
+     * @param op  the binary operator
+     * @param <Z> the result type of the binary operator
+     * @return the result of applying the binary operator to consecutive elements in the list and
+     * the start value, going from right to left.
+     */
+    <Z> Z foldRight(Z z, BiFunction<T, Z, Z> op);
 }

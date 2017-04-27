@@ -192,8 +192,30 @@ public class ListTest {
         assertSame(list, actualResult);
     }
 
+    @Test
+    public void testFoldRight() {
+
+        // Given a list of integer values
+        final List<Integer> list = rangeOf(5, 14);
+
+        // When folding the list right on addition
+        final long actualResult = list.foldRight(0L, (i,z) -> i + z);
+
+        // Then the result is the sum of all integer values in the list
+        assertEquals(sumOf(list), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
+
+    private static long sumOf(List<Integer> ints) {
+        long sum = 0;
+        while (!ints.isNil()) {
+            sum += ints.getHead();
+            ints = ints.getTail();
+        }
+        return sum;
+    }
 
     private static void assertListEquals(List<?> expected, List<?> actual) {
 
