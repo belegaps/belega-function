@@ -205,8 +205,35 @@ public class ListTest {
         assertEquals(sumOf(list), actualResult);
     }
 
+    @Test
+    public void testFoldLeft() {
+
+        final String EXPECTED_RESULT = "some string";
+
+        // Given a list of the characters of a string
+        List<Character> list = charactersOf(EXPECTED_RESULT);
+
+        // When folding the characters into a list from left to right
+        final String actualResult = list.foldLeft("", (s,c) -> s + c);
+
+        // Then the result is the string
+        assertEquals(EXPECTED_RESULT, actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
+
+    private static List<Character> charactersOf(String str) {
+
+        List<Character> list = List.nil();
+
+        int idx = str.length();
+        while (idx > 0) {
+            list = List.cons(str.charAt(--idx), list);
+        }
+
+        return list;
+    }
 
     private static long sumOf(List<Integer> ints) {
         long sum = 0;

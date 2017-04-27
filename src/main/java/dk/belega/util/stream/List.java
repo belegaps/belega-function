@@ -124,6 +124,20 @@ public interface List<T> {
         public <Z> Z foldRight(Z z, BiFunction<T, Z, Z> op) {
             return z;
         }
+
+        /**
+         * Apply a binary operator to consecutive elements of the list, from left to right, and a
+         * starting value.
+         *
+         * @param z  the starting value
+         * @param op the binary operator
+         * @return the result of applying the binary operator to each element of the list, going from
+         * left to right
+         */
+        @Override
+        public <Z> Z foldLeft(Z z, BiFunction<Z, T, Z> op) {
+            return z;
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -268,6 +282,20 @@ public interface List<T> {
         public <Z> Z foldRight(Z z, BiFunction<T, Z, Z> op) {
             return op.apply(getHead(), getTail().foldRight(z, op));
         }
+
+        /**
+         * Apply a binary operator to consecutive elements of the list, from left to right, and a
+         * starting value.
+         *
+         * @param z  the starting value
+         * @param op the binary operator
+         * @return the result of applying the binary operator to each element of the list, going from
+         * left to right
+         */
+        @Override
+        public <Z> Z foldLeft(Z z, BiFunction<Z, T, Z> op) {
+            return getTail().foldLeft(op.apply(z, getHead()), op);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,4 +409,15 @@ public interface List<T> {
      * the start value, going from right to left.
      */
     <Z> Z foldRight(Z z, BiFunction<T, Z, Z> op);
+
+    /**
+     * Apply a binary operator to consecutive elements of the list, from left to right, and a
+     * starting value.
+     * @param z the starting value
+     * @param op the binary operator
+     * @param <Z> the type of the result of the binary operator
+     * @return the result of applying the binary operator to each element of the list, going from
+     * left to right
+     */
+    <Z> Z foldLeft(Z z, BiFunction<Z, T, Z> op);
 }
