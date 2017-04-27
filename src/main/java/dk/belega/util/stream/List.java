@@ -65,6 +65,25 @@ public interface List<T> {
         public List<T> getTail() {
             return this;
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // Operations
+
+        /**
+         * Drop the first {@code n} elements of this list and return a list of the remaining
+         * elements.
+         *
+         * @param n the number of elements to drop
+         * @return a list consisting of all elements of this list, except the first {@code n}
+         * elements
+         */
+        @Override
+        public List<T> drop(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n cannot be negative");
+            }
+            return this;
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -143,6 +162,26 @@ public interface List<T> {
         public List<T> getTail() {
             return tail;
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // Operations
+
+        /**
+         * Drop the first {@code n} elements of this list and return a list of the remaining elements.
+         *
+         * @param n the number of elements to drop
+         * @return a list consisting of all elements of this list, except the first {@code n} elements
+         */
+        @Override
+        public List<T> drop(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n cannot be negative");
+            } else if (0 == n) {
+                return this;
+            } else {
+                return getTail().drop(n - 1);
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,6 +242,7 @@ public interface List<T> {
 
     /**
      * Return a new list with the given value as head and the same tail as this list.
+     *
      * @param head head value of new list
      * @return new list with given head and existing tail values
      */
@@ -214,4 +254,15 @@ public interface List<T> {
      * @return the list tail
      */
     List<T> getTail();
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Operations
+
+    /**
+     * Drop the first {@code n} elements of this list and return a list of the remaining elements.
+     *
+     * @param n the number of elements to drop
+     * @return a list consisting of all elements of this list, except the first {@code n} elements
+     */
+    List<T> drop(int n);
 }

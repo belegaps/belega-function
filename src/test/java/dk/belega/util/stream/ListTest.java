@@ -2,6 +2,8 @@ package dk.belega.util.stream;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 /**
@@ -67,5 +69,67 @@ public class ListTest {
 
         // Then the new value is the head of the new list
         assertEquals(EXPECTED_RESULT, newList.getHead());
+    }
+
+    @Test
+    public void testDropAll() {
+
+        // Given a list
+        final List<Integer> list = List.cons(1, List.cons(2, List.unit(3)));
+
+        // When dropping all elements
+        final List<Integer> actualResult = list.drop(3);
+
+        // Then the result is a nil list
+        assertTrue("Non-nil list returned after dropping all elements", actualResult.isNil());
+    }
+
+    @Test
+    public void testDropNegative() {
+
+        final List<String> NIL = List.nil();
+        final List<String> UNIT = List.unit("some value");
+
+        // Given a list
+        for (List<String> list : Arrays.asList(NIL, UNIT)) {
+
+            try {
+                // When dropping a negative number of elements
+                list.drop(-1);
+
+                // Then the method throws an exception
+                fail("drop() failed to throw exception for negative argument for list " + list);
+
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+    }
+
+    @Test
+    public void testDropMore() {
+
+        // Given a list
+        final List<Object> unit = List.unit(new Object());
+
+        // When dropping more elements than are in the list
+        final List<Object> actualResult = unit.drop(10);
+
+        // Then the result is the nil list
+        assertTrue("Non-nil list returned after dropping more elements than in the list", actualResult.isNil());
+    }
+
+    @Test
+    public void testDrop() {
+
+        final List<Integer> EXPECTED_RESULT = List.unit(73);
+
+        // Given a list with three elements
+        final List<Integer> list = List.cons(42, List.cons(37, EXPECTED_RESULT));
+
+        // When dropping the first two elements
+        final List<Integer> actualResult = list.drop(2);
+
+        // Then the remaining list is returned
+        assertSame(EXPECTED_RESULT, actualResult);
     }
 }
