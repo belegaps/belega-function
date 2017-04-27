@@ -21,13 +21,20 @@ public class ListTest {
         // Then the list reports empty
         assertTrue("Non-empty nil list", nil.isNil());
 
-        // And the headOption is empty
+        // And headOption is empty
         assertFalse("Non-empty nil list", nil.getHeadOption().isPresent());
 
         // And head throws an exception
         try {
             nil.getHead();
             fail("getHead() on nil list failed to throw exception");
+        } catch (UnsupportedOperationException ignored) {
+        }
+
+        // And setHead() throws an exception
+        try {
+            nil.setHead(42);
+            fail("setHead() on nil list failed to throw exception");
         } catch (UnsupportedOperationException ignored) {
         }
     }
@@ -45,5 +52,20 @@ public class ListTest {
 
         // And the tail is nil
         assertTrue("Non-nil tail of unit list", unitList.getTail().isNil());
+    }
+
+    @Test
+    public void testSetHead() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // Given a non-nil list
+        final List<Integer> list = List.unit(37);
+
+        // When setting the head of the list
+        final List<Integer> newList = list.setHead(EXPECTED_RESULT);
+
+        // Then the new value is the head of the new list
+        assertEquals(EXPECTED_RESULT, newList.getHead());
     }
 }

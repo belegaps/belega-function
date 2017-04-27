@@ -46,6 +46,17 @@ public interface List<T> {
         }
 
         /**
+         * Return a new list with the given value as head and the same tail as this list.
+         *
+         * @param head head value of new list
+         * @return new list with given head and existing tail values
+         */
+        @Override
+        public List<T> setHead(T head) {
+            throw new UnsupportedOperationException("Cannot call setHead() on nil list");
+        }
+
+        /**
          * Return the tail of the list.
          *
          * @return the list tail
@@ -110,6 +121,17 @@ public interface List<T> {
         @Override
         public T getHead() {
             return head;
+        }
+
+        /**
+         * Return a new list with the given value as head and the same tail as this list.
+         *
+         * @param head head value of new list
+         * @return new list with given head and existing tail values
+         */
+        @Override
+        public List<T> setHead(T head) {
+            return cons(head, getTail());
         }
 
         /**
@@ -179,6 +201,12 @@ public interface List<T> {
     @SuppressWarnings("UnusedReturnValue")
     T getHead();
 
+    /**
+     * Return a new list with the given value as head and the same tail as this list.
+     * @param head head value of new list
+     * @return new list with given head and existing tail values
+     */
+    List<T> setHead(T head);
 
     /**
      * Return the tail of the list.
