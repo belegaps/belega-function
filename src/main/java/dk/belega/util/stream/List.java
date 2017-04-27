@@ -97,6 +97,18 @@ public interface List<T> {
         public List<T> dropWhile(Predicate<? super T> predicate) {
             return this;
         }
+
+        /**
+         * Return a list containing all elements from this list, followed by all elements of the
+         * given list.
+         *
+         * @param other the list to append to this list
+         * @return list containing all elements from both lists
+         */
+        @Override
+        public List<T> append(List<T> other) {
+            return other;
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -211,6 +223,22 @@ public interface List<T> {
                 return this;
             }
         }
+
+        /**
+         * Return a list containing all elements from this list, followed by all elements of the
+         * given list.
+         *
+         * @param other the list to append to this list
+         * @return list containing all elements from both lists
+         */
+        @Override
+        public List<T> append(List<T> other) {
+            if (other.isNil()) {
+                return this;
+            } else {
+                return cons(getHead(), getTail().append(other));
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,4 +331,12 @@ public interface List<T> {
      * @return list of remaining elements
      */
     List<T> dropWhile(Predicate<? super T> predicate);
+
+    /**
+     * Return a list containing all elements from this list, followed by all elements of the
+     * given list.
+     * @param other the list to append to this list
+     * @return list containing all elements from both lists
+     */
+    List<T> append(List<T> other);
 }

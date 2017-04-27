@@ -163,8 +163,68 @@ public class ListTest {
         assertTrue("Non-nil list returned after dropping all elements", actualResult.isNil());
     }
 
+    @Test
+    public void testAppend() {
+
+        final List<Integer> EXPECTED_RESULT = rangeOf(0, 10);
+
+        // Given two lists
+        final List<Integer> first = rangeOf(0, 5);
+        final List<Integer> second = rangeOf(5, 10);
+
+        // When appending one to the other
+        final List<Integer> actualResult = first.append(second);
+
+        // Then the result contains all elements from both lists
+        assertListEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    @Test
+    public void testAppendNil() {
+
+        // Given a list
+        final List<Integer> list = rangeOf(4, 30);
+
+        // When appending the nil list
+        final List<Integer> actualResult = list.append(List.nil());
+
+        // Then the result is the same list
+        assertSame(list, actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
+
+    private static void assertListEquals(List<?> expected, List<?> actual) {
+
+        List<?> e = expected;
+        List<?> a = actual;
+
+        for (; ; ) {
+            if (e.isNil()) {
+                if (!a.isNil()) {
+                    fail("List sizes differ");
+                }
+                break;
+            } else if (a.isNil()) {
+                fail("List sizes differ");
+            }
+
+            final Object eHead = e.getHead();
+            final Object aHead = a.getHead();
+
+            if (null == eHead) {
+                if (null != aHead) {
+                    fail("List elements differ; expected null, got " + aHead);
+                }
+            } else if (!eHead.equals(aHead)) {
+                fail("List elements differ; expected " + eHead + ", got " + aHead);
+            }
+
+            e = e.getTail();
+            a = a.getTail();
+        }
+    }
 
     private static List<Integer> rangeOf(int start, int end) {
         if (end < start) {
