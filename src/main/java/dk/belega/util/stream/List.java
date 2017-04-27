@@ -1,6 +1,7 @@
 package dk.belega.util.stream;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Abstraction of an immutable list
@@ -82,6 +83,18 @@ public interface List<T> {
             if (n < 0) {
                 throw new IllegalArgumentException("n cannot be negative");
             }
+            return this;
+        }
+
+        /**
+         * Drop the initial elements of this list, as long as they match the given predicate and
+         * return the list of elements remaining.
+         *
+         * @param predicate the predicate
+         * @return list of remaining elements
+         */
+        @Override
+        public List<T> dropWhile(Predicate<? super T> predicate) {
             return this;
         }
     }
@@ -182,6 +195,22 @@ public interface List<T> {
                 return getTail().drop(n - 1);
             }
         }
+
+        /**
+         * Drop the initial elements of this list, as long as they match the given predicate and
+         * return the list of elements remaining.
+         *
+         * @param predicate the predicate
+         * @return list of remaining elements
+         */
+        @Override
+        public List<T> dropWhile(Predicate<? super T> predicate) {
+            if (predicate.test(getHead())) {
+                return getTail().dropWhile(predicate);
+            } else {
+                return this;
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,4 +294,13 @@ public interface List<T> {
      * @return a list consisting of all elements of this list, except the first {@code n} elements
      */
     List<T> drop(int n);
+
+    /**
+     * Drop the initial elements of this list, as long as they match the given predicate and
+     * return the list of elements remaining.
+     *
+     * @param predicate the predicate
+     * @return list of remaining elements
+     */
+    List<T> dropWhile(Predicate<? super T> predicate);
 }

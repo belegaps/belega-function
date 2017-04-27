@@ -132,4 +132,48 @@ public class ListTest {
         // Then the remaining list is returned
         assertSame(EXPECTED_RESULT, actualResult);
     }
+
+    @Test
+    public void testDropWhile() {
+
+        final Integer EXPECTED_RESULT = 5;
+
+        // Given a range of integers from 0 to 9
+        final List<Integer> list = rangeOf(0, 10);
+
+        // When dropping prefix values under 5
+        List<Integer> actualResult = list.dropWhile(n -> n < EXPECTED_RESULT);
+
+        // Then the head value of the result is 5
+        assertEquals(EXPECTED_RESULT, actualResult.getHead());
+    }
+
+    @Test
+    public void testDropWhileAllMatch() {
+
+        final Integer UNMATCHED_VALUE = 74;
+
+        // Given a list of integers
+        final List<Integer> list = rangeOf(37, UNMATCHED_VALUE);
+
+        // When dropping prefix elements without finding a failing match
+        final List<Integer> actualResult = list.dropWhile(n -> n < UNMATCHED_VALUE);
+
+        // Then the result is the nil list
+        assertTrue("Non-nil list returned after dropping all elements", actualResult.isNil());
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation
+
+    private static List<Integer> rangeOf(int start, int end) {
+        if (end < start) {
+            throw new IllegalArgumentException("illegal range (end < start)");
+        }
+        List<Integer> list = List.nil();
+        while (end > start) {
+            list = List.cons(--end, list);
+        }
+        return list;
+    }
 }
