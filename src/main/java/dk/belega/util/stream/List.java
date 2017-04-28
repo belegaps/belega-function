@@ -2,6 +2,7 @@ package dk.belega.util.stream;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -427,5 +428,15 @@ public interface List<T> {
      */
     default List<T> reverse() {
         return foldLeft(nil(), (t,h) -> cons(h, t));
+    }
+
+    /**
+     * Return a list with the result of applying a function to all elements in this list.
+     * @param mapper the mapper function
+     * @param <R> the return type of the function
+     * @return list of the result of applying mapper function to all elements of this list
+     */
+    default <R> List<R> map(Function<T,R> mapper) {
+        return foldRight(nil(), (t,l) -> cons(mapper.apply(t), l));
     }
 }

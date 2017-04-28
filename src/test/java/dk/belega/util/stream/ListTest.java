@@ -235,6 +235,22 @@ public class ListTest {
         assertListEquals(listOf(EXPECTED_RESULT), actualResult);
     }
 
+    @Test
+    public void testMap() {
+
+        // Given a list of integers
+        final List<Integer> list = rangeOf(0, 10);
+
+        // When mapping the elements to strings
+        final List<String> actualResult = list.map(Object::toString);
+
+        // Then the result is a list of strings
+        List<Integer> e = list;
+        for (List<String> a = actualResult; !a.isNil(); a = a.getTail(), e = e.getTail()) {
+            assertEquals(e.getHead().toString(), a.getHead());
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
