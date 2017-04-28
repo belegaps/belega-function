@@ -264,6 +264,43 @@ public class ListTest {
         assertListEquals(rangeOf(0, 100, 2), actualResult);
     }
 
+    @Test
+    public void testEquals() {
+
+        // Given a list
+        final List<Integer> first = rangeOf(0, 5);
+
+        // And an identical list
+        final List<Integer> second =
+                List.cons(0,
+                        List.cons(1,
+                                List.cons(2,
+                                        List.cons(3,
+                                                List.unit(4)))));
+
+        // When comparing for equality
+        final boolean actualResult = first.equals(second);
+
+        // Then the result is true
+        assertTrue("Equal list test failed", actualResult);
+    }
+
+    @Test
+    public void testEqualsWithNull() {
+
+        // Given a list with a null value
+        List<Integer> nullList = List.unit(null);
+
+        // And another list with a non-null value
+        List<Integer> nonNullList = List.unit(5);
+
+        // When testing the lists for equality
+        final boolean actualResult = nullList.equals(nonNullList);
+
+        // Then the answer should be false
+        assertFalse("Non-equal lists report equality", actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

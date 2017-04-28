@@ -1,5 +1,6 @@
 package dk.belega.util.stream;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -71,6 +72,24 @@ public interface List<T> {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         // Operations
+
+        /**
+         * Indicates whether some other object is "equal to" this one.
+         *
+         * @param obj the reference object with which to compare.
+         * @return {@code true} if this object is the same as the obj
+         * argument; {@code false} otherwise.
+         * @see #hashCode()
+         * @see HashMap
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof List)) {
+                return false;
+            }
+            final List<?> other = (List<?>) obj;
+            return other.isNil();
+        }
 
         /**
          * Drop the first {@code n} elements of this list and return a list of the remaining
@@ -220,6 +239,39 @@ public interface List<T> {
 
         //////////////////////////////////////////////////////////////////////////////////////////
         // Operations
+
+        /**
+         * Indicates whether some other object is "equal to" this one.
+         *
+         * @param obj the reference object with which to compare.
+         * @return {@code true} if this object is the same as the obj
+         * argument; {@code false} otherwise.
+         * @see #hashCode()
+         * @see HashMap
+         */
+        @Override
+        public boolean equals(Object obj) {
+
+            if (!(obj instanceof List)) {
+                return false;
+            }
+
+            final List<?> other = (List<?>) obj;
+
+            if (other.isNil()) {
+                return false;
+            }
+
+            if (null == getHead()) {
+                if (null != other.getHead()) {
+                    return false;
+                }
+            } else if (!getHead().equals(other.getHead())) {
+                return false;
+            }
+
+            return getTail().equals(other.getTail());
+        }
 
         /**
          * Drop the first {@code n} elements of this list and return a list of the remaining elements.
