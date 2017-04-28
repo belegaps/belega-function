@@ -283,20 +283,9 @@ public interface List<T> {
             }
 
             final List<?> other = (List<?>) obj;
-
-            if (other.isNil()) {
-                return false;
-            }
-
-            if (null == getHead()) {
-                if (null != other.getHead()) {
-                    return false;
-                }
-            } else if (!getHead().equals(other.getHead())) {
-                return false;
-            }
-
-            return getTail().equals(other.getTail());
+            return !other.isNil() &&
+                    equal(getHead(), other.getHead()) &&
+                    getTail().equals(other.getTail());
         }
 
         /**
@@ -308,7 +297,7 @@ public interface List<T> {
         public String toString() {
             return getTail().foldLeft(
                     new StringBuilder("[").append(stringOf(getHead())),
-                    (sb,t) -> sb.append(", ").append(stringOf(t)))
+                    (sb, t) -> sb.append(", ").append(stringOf(t)))
                     .append("]").toString();
         }
 
@@ -392,8 +381,29 @@ public interface List<T> {
         //////////////////////////////////////////////////////////////////////////////////////////
         // Implementation
 
+        /**
+         * Return string representation of given object or "null" if given a {@code null} value.
+         *
+         * @param obj the object reference
+         * @return string representation of object or {@code null}
+         */
         private static String stringOf(Object obj) {
             return null == obj ? "null" : obj.toString();
+        }
+
+        /**
+         * Return true if both values are {@code null} or if equal.
+         *
+         * @param left  left value to compare
+         * @param right right value to compare
+         * @return {@code true} if objects are equal or both {@code null}
+         */
+        private static boolean equal(Object left, Object right) {
+            if (null == left) {
+                return null == right;
+            } else {
+                return left.equals(right);
+            }
         }
     }
 
@@ -512,8 +522,9 @@ public interface List<T> {
     /**
      * Apply a binary operator to consecutive elements of the list, from left to right, and a
      * starting value.
-     * @param z the starting value
-     * @param op the binary operator
+     *
+     * @param z   the starting value
+     * @param op  the binary operator
      * @param <Z> the type of the result of the binary operator
      * @return the result of applying the binary operator to each element of the list, going from
      * left to right
@@ -522,39 +533,43 @@ public interface List<T> {
 
     /**
      * Return a list with all elements from this list in reverse order.
+     *
      * @return list with elements from this list in reverse order
      */
     default List<T> reverse() {
-        return foldLeft(nil(), (t,h) -> cons(h, t));
+        return foldLeft(nil(), (t, h) -> cons(h, t));
     }
 
     /**
      * Return a list with the result of applying a function to all elements in this list.
+     *
      * @param mapper the mapper function
-     * @param <R> the return type of the function
+     * @param <R>    the return type of the function
      * @return list of the result of applying mapper function to all elements of this list
      */
-    default <R> List<R> map(Function<T,R> mapper) {
-        return foldRight(nil(), (t,l) -> cons(mapper.apply(t), l));
+    default <R> List<R> map(Function<T, R> mapper) {
+        return foldRight(nil(), (t, l) -> cons(mapper.apply(t), l));
     }
 
     /**
      * Return a list of all elements of this list that satisfies the given predicate.
+     *
      * @param predicate the predicate
      * @return list of satisfying elements
      */
     default List<T> filter(Predicate<? super T> predicate) {
-        return foldRight(nil(), (t,l) -> predicate.test(t) ? cons(t, l) : l);
+        return foldRight(nil(), (t, l) -> predicate.test(t) ? cons(t, l) : l);
     }
 
     /**
      * Apply the given mapper function to all elements of this list and return a list containing
      * the combined set of elements of the mapper function results.
+     *
      * @param mapper the mapper function
-     * @param <R> the element type of the returned collection
+     * @param <R>    the element type of the returned collection
      * @return the combined list of elements from the function's return values
      */
-    default <R> List<R> flatMap(Function<T,List<R>> mapper) {
-        return foldRight(nil(), (t,l) -> mapper.apply(t).append(l));
+    default <R> List<R> flatMap(Function<T, List<R>> mapper) {
+        return foldRight(nil(), (t, l) -> mapper.apply(t).append(l));
     }
 }
