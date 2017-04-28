@@ -220,8 +220,41 @@ public class ListTest {
         assertEquals(EXPECTED_RESULT, actualResult);
     }
 
+    @Test
+    public void testReverse() {
+
+        final Integer[] EXPECTED_RESULT = new Integer[] { 0, 1, 2, 3 };
+
+        // Given a list
+        final List<Integer> list = listOf(reversed(EXPECTED_RESULT));
+
+        // When reversing the list
+        final List<Integer> actualResult = list.reverse();
+
+        // Then the resulting list contains the elements in reverse
+        assertListEquals(listOf(EXPECTED_RESULT), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
+
+    private <T> List<T> listOf(T[] elements) {
+        List<T> list = List.nil();
+        for (int i = elements.length; i > 0; --i) {
+            list = List.cons(elements[i - 1], list);
+        }
+        return list;
+    }
+
+    private <E> E[] reversed(E[] values) {
+        final E[] result = Arrays.copyOf(values, values.length);
+        for (int i = 0, j = values.length - 1; i < j; ++i, --j) {
+            E tmp = values[i];
+            values[i] = values[j];
+            values[j] = tmp;
+        }
+        return result;
+    }
 
     private static List<Character> charactersOf(String str) {
 

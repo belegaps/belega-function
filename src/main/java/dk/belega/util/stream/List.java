@@ -420,4 +420,12 @@ public interface List<T> {
      * left to right
      */
     <Z> Z foldLeft(Z z, BiFunction<Z, T, Z> op);
+
+    /**
+     * Return a list with all elements from this list in reverse order.
+     * @return list with elements from this list in reverse order
+     */
+    default List<T> reverse() {
+        return foldLeft(nil(), (t,h) -> cons(h, t));
+    }
 }
