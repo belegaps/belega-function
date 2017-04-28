@@ -301,6 +301,34 @@ public class ListTest {
         assertFalse("Non-equal lists report equality", actualResult);
     }
 
+    @Test
+    public void testToString() {
+
+        final Integer[] VALUES = { 37, 42, 73 };
+
+        // Given a list of integers
+        final List<Integer> integerList = listOf(VALUES);
+
+        // When converting to a string
+        final String actualResult = integerList.toString();
+
+        // Then the result is an array string
+        assertEquals(Arrays.toString(VALUES), actualResult);
+    }
+
+    @Test
+    public void testNilToString() {
+
+        // Given the nil list
+        List<Integer> integerList = List.nil();
+
+        // When converting to a string
+        final String actualResult = integerList.toString();
+
+        // Then the result is an array string
+        assertEquals(Arrays.toString(new Integer[0]), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
