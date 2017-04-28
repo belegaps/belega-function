@@ -330,6 +330,25 @@ public class ListTest {
     }
 
     @Test
+    public void testToStringWithNull() {
+
+        final String[] VALUES = {
+                "head",
+                null,
+                "tail"
+        };
+
+        // Given a string list with a null value
+        List<String> list = listOf(VALUES);
+
+        // When converting to a string
+        final String actualResult = list.toString();
+
+        // Then the result contains "null"
+        assertEquals(Arrays.toString(VALUES), actualResult);
+    }
+
+    @Test
     public void testFlatMap() {
 
         final String[] VALUES = {

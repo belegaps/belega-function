@@ -307,8 +307,8 @@ public interface List<T> {
         @Override
         public String toString() {
             return getTail().foldLeft(
-                    new StringBuilder("[").append(getHead().toString()),
-                    (sb,t) -> sb.append(", ").append(t.toString()))
+                    new StringBuilder("[").append(stringOf(getHead())),
+                    (sb,t) -> sb.append(", ").append(stringOf(t)))
                     .append("]").toString();
         }
 
@@ -387,6 +387,13 @@ public interface List<T> {
         @Override
         public <Z> Z foldLeft(Z z, BiFunction<Z, T, Z> op) {
             return getTail().foldLeft(op.apply(z, getHead()), op);
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // Implementation
+
+        private static String stringOf(Object obj) {
+            return null == obj ? "null" : obj.toString();
         }
     }
 
