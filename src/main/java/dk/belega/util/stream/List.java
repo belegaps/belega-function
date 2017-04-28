@@ -508,6 +508,18 @@ public interface List<T> {
      */
     List<T> getTail();
 
+    /**
+     * Return the number of elements in the list.
+     * @return number of elements in this list
+     */
+    default long getLength() {
+        long length = 0;
+        for (List<T> tList = this; !tList.isNil(); tList = tList.getTail()) {
+            length += 1;
+        }
+        return length;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Operations
 

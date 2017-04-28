@@ -379,6 +379,32 @@ public class ListTest {
         assertEquals(integerList.map(n -> n * 2), actualResult);
     }
 
+    @Test
+    public void testLength() {
+
+        final String SOME_VALUE = "Some value";
+
+        // Given the nil list
+        final List<Object> nil = List.nil();
+
+        // Then the length is zero (0)
+        assertEquals(0L, nil.getLength());
+
+
+        // Given a unit list
+        final List<String> unit = List.unit(SOME_VALUE);
+
+        // Then the length is one (1)
+        assertEquals(1L, unit.getLength());
+
+
+        // Given a list of values
+        final List<Character> characterList = listOf(SOME_VALUE.toCharArray());
+
+        // Then the length is the number of elements in the list
+        assertEquals(SOME_VALUE.length(), characterList.getLength());
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
