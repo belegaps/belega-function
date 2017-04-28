@@ -251,6 +251,19 @@ public class ListTest {
         }
     }
 
+    @Test
+    public void testFilter() {
+
+        // Given a list of integers
+        final List<Integer> list = rangeOf(0, 100);
+
+        // When filtering out odd numbers
+        final List<Integer> actualResult = list.filter(n -> (n % 2) == 0);
+
+        // Then only even numbers remain
+        assertListEquals(rangeOf(0, 100, 2), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
@@ -325,13 +338,24 @@ public class ListTest {
     }
 
     private static List<Integer> rangeOf(int start, int end) {
-        if (end < start) {
-            throw new IllegalArgumentException("illegal range (end < start)");
+        return rangeOf(start, end, Integer.signum(end - start));
+    }
+
+    private static List<Integer> rangeOf(int start, int end, int step) {
+
+        if (start == end) {
+            return List.nil();
         }
+
+        if (Integer.signum(end - start) != Integer.signum(step)) {
+            throw new IllegalArgumentException("illegal range/step");
+        }
+
         List<Integer> list = List.nil();
-        while (end > start) {
-            list = List.cons(--end, list);
+        for (int i = start; i < end; i += step) {
+            list = List.cons(i, list);
         }
-        return list;
+
+        return list.reverse();
     }
 }

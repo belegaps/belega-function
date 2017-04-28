@@ -439,4 +439,13 @@ public interface List<T> {
     default <R> List<R> map(Function<T,R> mapper) {
         return foldRight(nil(), (t,l) -> cons(mapper.apply(t), l));
     }
+
+    /**
+     * Return a list of all elements of this list that satisfies the given predicate.
+     * @param predicate the predicate
+     * @return list of satisfying elements
+     */
+    default List<T> filter(Predicate<? super T> predicate) {
+        return foldRight(nil(), (t,l) -> predicate.test(t) ? cons(t, l) : l);
+    }
 }
