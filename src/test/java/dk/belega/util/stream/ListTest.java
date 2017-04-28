@@ -380,6 +380,23 @@ public class ListTest {
     }
 
     @Test
+    public void testZipWithDifferentLengths() {
+
+        final String[] FIRST_VALUES = { "a", "b", "c", "d", "e" };
+        final String[] SECOND_VALUES = { "f", "g", "h", "i" };
+
+        // Given two lists of different lengths
+        final List<String> first = listOf(FIRST_VALUES);
+        final List<String> second = listOf(SECOND_VALUES);
+
+        // When zipping the two lists
+        final List<String> actualResult = first.zipWith(second, String::concat);
+
+        // Then the length of the result is the minimum length of the two lists
+        assertEquals(Math.min(first.getLength(), second.getLength()), actualResult.getLength());
+    }
+
+    @Test
     public void testLength() {
 
         final String SOME_VALUE = "Some value";
