@@ -176,7 +176,7 @@ public class ListTest {
         final List<Integer> actualResult = first.append(second);
 
         // Then the result contains all elements from both lists
-        assertListEquals(EXPECTED_RESULT, actualResult);
+        assertEquals(EXPECTED_RESULT, actualResult);
     }
 
     @Test
@@ -232,7 +232,7 @@ public class ListTest {
         final List<Integer> actualResult = list.reverse();
 
         // Then the resulting list contains the elements in reverse
-        assertListEquals(listOf(EXPECTED_RESULT), actualResult);
+        assertEquals(listOf(EXPECTED_RESULT), actualResult);
     }
 
     @Test
@@ -261,7 +261,7 @@ public class ListTest {
         final List<Integer> actualResult = list.filter(n -> (n % 2) == 0);
 
         // Then only even numbers remain
-        assertListEquals(rangeOf(0, 100, 2), actualResult);
+        assertEquals(rangeOf(0, 100, 2), actualResult);
     }
 
     @Test
@@ -369,37 +369,6 @@ public class ListTest {
             ints = ints.getTail();
         }
         return sum;
-    }
-
-    private static void assertListEquals(List<?> expected, List<?> actual) {
-
-        List<?> e = expected;
-        List<?> a = actual;
-
-        for (; ; ) {
-            if (e.isNil()) {
-                if (!a.isNil()) {
-                    fail("List sizes differ");
-                }
-                break;
-            } else if (a.isNil()) {
-                fail("List sizes differ");
-            }
-
-            final Object eHead = e.getHead();
-            final Object aHead = a.getHead();
-
-            if (null == eHead) {
-                if (null != aHead) {
-                    fail("List elements differ; expected null, got " + aHead);
-                }
-            } else if (!eHead.equals(aHead)) {
-                fail("List elements differ; expected " + eHead + ", got " + aHead);
-            }
-
-            e = e.getTail();
-            a = a.getTail();
-        }
     }
 
     private static List<Integer> rangeOf(int start, int end) {
