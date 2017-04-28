@@ -329,8 +329,34 @@ public class ListTest {
         assertEquals(Arrays.toString(new Integer[0]), actualResult);
     }
 
+    @Test
+    public void testFlatMap() {
+
+        final String[] VALUES = {
+                "First",
+                "Last"
+        };
+
+        // Given a list of strings
+        final List<String> list = listOf(VALUES);
+
+        // When flat-mapping to list of characters
+        final List<Character> actualResult = list.flatMap(ListTest::charactersOf);
+
+        // Then the result is a list of all characters
+        assertEquals(listOf((VALUES[0] + VALUES[1]).toCharArray()), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
+
+    private List<Character> listOf(char[] elements) {
+        List<Character> list = List.nil();
+        for (int i = elements.length; i > 0; --i) {
+            list = List.cons(elements[i - 1], list);
+        }
+        return list;
+    }
 
     private <T> List<T> listOf(T[] elements) {
         List<T> list = List.nil();

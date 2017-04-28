@@ -539,4 +539,15 @@ public interface List<T> {
     default List<T> filter(Predicate<? super T> predicate) {
         return foldRight(nil(), (t,l) -> predicate.test(t) ? cons(t, l) : l);
     }
+
+    /**
+     * Apply the given mapper function to all elements of this list and return a list containing
+     * the combined set of elements of the mapper function results.
+     * @param mapper the mapper function
+     * @param <R> the element type of the returned collection
+     * @return the combined list of elements from the function's return values
+     */
+    default <R> List<R> flatMap(Function<T,List<R>> mapper) {
+        return foldRight(nil(), (t,l) -> mapper.apply(t).append(l));
+    }
 }
