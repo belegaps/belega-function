@@ -366,6 +366,19 @@ public class ListTest {
         assertEquals(listOf((VALUES[0] + VALUES[1]).toCharArray()), actualResult);
     }
 
+    @Test
+    public void testZipWith() {
+
+        // Given a list of integers
+        final List<Integer> integerList = rangeOf(0, 100, 10);
+
+        // When zipping the list with itself using addition
+        final List<Integer> actualResult = integerList.zipWith(integerList, (l,r) -> l + r);
+
+        // Then the result is a list with double values
+        assertEquals(integerList.map(n -> n * 2), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

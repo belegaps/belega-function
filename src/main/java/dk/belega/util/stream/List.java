@@ -184,6 +184,20 @@ public interface List<T> {
         public <Z> Z foldLeft(Z z, BiFunction<Z, T, Z> op) {
             return z;
         }
+
+        /**
+         * Generates a list formed from this list and {@code that} list by combining corresponding
+         * elements using a binary operations.  The length of the generated list is the minimum length
+         * of this list and {@code that}.
+         *
+         * @param that   that list
+         * @param mapper the binary mapper operation
+         * @return list of combined elements
+         */
+        @Override
+        public <B, R> List<R> zipWith(List<B> that, BiFunction<? super T, ? super B, R> mapper) {
+            return nil();
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -376,6 +390,22 @@ public interface List<T> {
         @Override
         public <Z> Z foldLeft(Z z, BiFunction<Z, T, Z> op) {
             return getTail().foldLeft(op.apply(z, getHead()), op);
+        }
+
+        /**
+         * Generates a list formed from this list and {@code that} list by combining corresponding
+         * elements using a binary operations.  The length of the generated list is the minimum length
+         * of this list and {@code that}.
+         *
+         * @param that   that list
+         * @param mapper the binary mapper operation
+         * @return list of combined elements
+         */
+        @Override
+        public <B, R> List<R> zipWith(List<B> that, BiFunction<? super T, ? super B, R> mapper) {
+            return that.isNil() ? nil() :
+                    cons(mapper.apply(getHead(), that.getHead()),
+                            getTail().zipWith(that.getTail(), mapper));
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -572,4 +602,17 @@ public interface List<T> {
     default <R> List<R> flatMap(Function<T, List<R>> mapper) {
         return foldRight(nil(), (t, l) -> mapper.apply(t).append(l));
     }
+
+    /**
+     * Generates a list formed from this list and {@code that} list by combining corresponding
+     * elements using a binary operations.  The length of the generated list is the minimum length
+     * of this list and {@code that}.
+     *
+     * @param that   that list
+     * @param mapper the binary mapper operation
+     * @param <B>    type of elements in that list
+     * @param <R>    return value of the mapper operation
+     * @return list of combined elements
+     */
+    <B, R> List<R> zipWith(List<B> that, BiFunction<? super T, ? super B, R> mapper);
 }
