@@ -462,6 +462,39 @@ public class ListTest {
         assertSame(EXPECTED_RESULT, actualResult);
     }
 
+    @Test
+    public void testTakeWhile() {
+
+        final int LIMIT = 5;
+        final List<Integer> EXPECTED_RESULT = rangeOf(0, LIMIT);
+
+        // Given a list of integers
+        final List<Integer> list = EXPECTED_RESULT.append(rangeOf(LIMIT, LIMIT * 2));
+
+        // When taking initial elements under 5
+        final List<Integer> actualResult = list.takeWhile(n -> n < LIMIT);
+
+        // Then the result contains those initial values
+        assertEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    @Test
+    public void testTakeWhileAll() {
+
+        // Given a list
+        final List<String> EXPECTED_RESULT =
+                List.cons("first",
+                        List.cons("second",
+                                List.cons("third",
+                                        List.nil())));
+
+        // When all elements match predicate of takeWhile
+        final List<String> actualResult = EXPECTED_RESULT.takeWhile(s -> true);
+
+        // Then the result is the original list
+        assertSame("Not same object returned from takeWhile", EXPECTED_RESULT, actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

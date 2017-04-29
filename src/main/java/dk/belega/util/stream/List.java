@@ -209,6 +209,18 @@ public interface List<T> {
         public List<T> take(long n) {
             return this;
         }
+
+        /**
+         * Return the longest prefix of this list where all elements satisfies the given
+         * {@code predicate}.
+         *
+         * @param predicate the predicate
+         * @return list of initial elements satifying predicate
+         */
+        @Override
+        public List<T> takeWhile(Predicate<? super T> predicate) {
+            return this;
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -441,6 +453,28 @@ public interface List<T> {
             }
         }
 
+        /**
+         * Return the longest prefix of this list where all elements satisfies the given
+         * {@code predicate}.
+         *
+         * @param predicate the predicate
+         * @return list of initial elements satifying predicate
+         */
+        @Override
+        public List<T> takeWhile(Predicate<? super T> predicate) {
+
+            if (predicate.test(getHead())) {
+                final List<T> tail = getTail().takeWhile(predicate);
+                if (tail == getTail()) {
+                    return this;
+                } else {
+                    return cons(getHead(), tail);
+                }
+            } else {
+                return nil();
+            }
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////
         // Implementation
 
@@ -543,6 +577,7 @@ public interface List<T> {
 
     /**
      * Return the number of elements in the list.
+     *
      * @return number of elements in this list
      */
     default long getLength() {
@@ -663,8 +698,18 @@ public interface List<T> {
 
     /**
      * Return a list consisting of the first {@code n} elements of this list.
+     *
      * @param n the number of elements
      * @return list of initial elements
      */
     List<T> take(long n);
+
+    /**
+     * Return the longest prefix of this list where all elements satisfies the given
+     * {@code predicate}.
+     *
+     * @param predicate the predicate
+     * @return list of initial elements satifying predicate
+     */
+    List<T> takeWhile(Predicate<? super T> predicate);
 }
