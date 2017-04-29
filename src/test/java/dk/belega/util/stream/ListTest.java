@@ -3,6 +3,7 @@ package dk.belega.util.stream;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -510,6 +511,19 @@ public class ListTest {
         assertTrue("forall() returned false while all elements matched predicate", actualResult);
     }
 
+    @Test
+    public void testExists() {
+
+        // Given a list of strings with one null value
+        final List<String> list = listOf("first", "second", null, "fourth");
+
+        // When testing if any element matches predicate
+        final boolean actualResult = list.exists(Objects::isNull);
+
+        // Then exists() returns true
+        assertTrue("exists failed to find match", actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
@@ -521,7 +535,8 @@ public class ListTest {
         return list;
     }
 
-    private <T> List<T> listOf(T[] elements) {
+    @SafeVarargs
+    private final <T> List<T> listOf(T... elements) {
         List<T> list = List.nil();
         for (int i = elements.length; i > 0; --i) {
             list = List.cons(elements[i - 1], list);

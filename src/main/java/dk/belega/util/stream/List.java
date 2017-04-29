@@ -233,6 +233,17 @@ public interface List<T> {
         public boolean forall(Predicate<? super T> predicate) {
             return true;
         }
+
+        /**
+         * Return {@code true} if any element of this list satisfies the given {@code predicate}.
+         *
+         * @param predicate the predicate to use for testing
+         * @return {@code true} if any element satisfies predicate
+         */
+        @Override
+        public boolean exists(Predicate<? super T> predicate) {
+            return false;
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -499,6 +510,17 @@ public interface List<T> {
             return predicate.test(getHead()) && getTail().forall(predicate);
         }
 
+        /**
+         * Return {@code true} if any element of this list satisfies the given {@code predicate}.
+         *
+         * @param predicate the predicate to use for testing
+         * @return {@code true} if any element satisfies predicate
+         */
+        @Override
+        public boolean exists(Predicate<? super T> predicate) {
+            return predicate.test(getHead()) || getTail().exists(predicate);
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////
         // Implementation
 
@@ -745,4 +767,12 @@ public interface List<T> {
      * match
      */
     boolean forall(Predicate<? super T> predicate);
+
+    /**
+     * Return {@code true} if any element of this list satisfies the given {@code predicate}.
+     *
+     * @param predicate the predicate to use for testing
+     * @return {@code true} if any element satisfies predicate
+     */
+    boolean exists(Predicate<? super T> predicate);
 }
