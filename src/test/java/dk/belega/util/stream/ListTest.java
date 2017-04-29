@@ -524,6 +524,36 @@ public class ListTest {
         assertTrue("exists failed to find match", actualResult);
     }
 
+    @Test
+    public void testScanLeft() {
+
+        final String EXPECTED_RESULT = "Some string value";
+
+        // Given a list of characters from a string
+        final List<Character> characterList = listOf(EXPECTED_RESULT.toCharArray());
+
+        // When scanning the list of characters by combining to strings
+        final List<String> actualResult = characterList.scanLeft("", (s,c) -> s + c);
+
+        // Then the result is all prefixes of the character list
+        for (List<String> l = actualResult; !l.isNil(); l = l.getTail()) {
+            assertTrue("Non-prefix returned", EXPECTED_RESULT.startsWith(l.getHead()));
+        }
+    }
+
+    @Test
+    public void testScanLeftEmpty() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // When scanning the nil list
+        final List<Integer> actualResult =
+                List.<Integer>nil().scanLeft(EXPECTED_RESULT, (z, h) -> z + h);
+
+        // Then the result contains only the starting value
+        assertEquals(listOf(EXPECTED_RESULT), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

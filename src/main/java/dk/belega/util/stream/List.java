@@ -775,4 +775,19 @@ public interface List<T> {
      * @return {@code true} if any element satisfies predicate
      */
     boolean exists(Predicate<? super T> predicate);
+
+    /**
+     * Return a list of cumulative results of applying the given {@code operator} to consecutive
+     * elements of this list and a starting value, going from left to right.
+     *
+     * @param z        the starting value
+     * @param operator the operator
+     * @param <Z>      the return value of the operator
+     * @return list of cumulative results
+     */
+    default <Z> List<Z> scanLeft(Z z, BiFunction<Z, T, Z> operator) {
+        return foldLeft(
+                List.unit(z),
+                (l, h) -> cons(operator.apply(l.getHead(), h), l));
+    }
 }
