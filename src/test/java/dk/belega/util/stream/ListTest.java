@@ -554,6 +554,36 @@ public class ListTest {
         assertEquals(listOf(EXPECTED_RESULT), actualResult);
     }
 
+    @Test
+    public void testScanRight() {
+
+        final String EXPECTED_RESULT = "Some string value";
+
+        // Given a list of characters from a string
+        final List<Character> characterList = listOf(EXPECTED_RESULT.toCharArray());
+
+        // When scanning the list, right to left, by combining to strings
+        final List<String> actualResult = characterList.scanRight("", (c,s) -> c + s);
+
+        // Then the result is all suffixes of the character list
+        for (List<String> l = actualResult; !l.isNil(); l = l.getTail()) {
+            assertTrue("Non-suffix returned", EXPECTED_RESULT.endsWith(l.getHead()));
+        }
+    }
+
+    @Test
+    public void testScanRightEmpty() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // When scanning the nil list
+        final List<Integer> actualResult =
+                List.<Integer>nil().scanRight(EXPECTED_RESULT, (z, h) -> z + h);
+
+        // Then the result contains only the starting value
+        assertEquals(listOf(EXPECTED_RESULT), actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

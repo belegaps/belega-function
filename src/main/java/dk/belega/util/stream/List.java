@@ -790,4 +790,19 @@ public interface List<T> {
                 List.unit(z),
                 (l, h) -> cons(operator.apply(l.getHead(), h), l));
     }
+
+    /**
+     * Return a list of cumulative results of applying the given {@code operator} to consecutive
+     * elements of this list and a starting value, going from right to left.
+     *
+     * @param z        the starting value
+     * @param operator the operator
+     * @param <Z>      the return value of the operator
+     * @return list of cumulative results
+     */
+    default <Z> List<Z> scanRight(Z z, BiFunction<T,Z,Z> operator) {
+        return foldRight(
+                List.unit(z),
+                (h, l) -> cons(operator.apply(h, l.getHead()), l));
+    }
 }
