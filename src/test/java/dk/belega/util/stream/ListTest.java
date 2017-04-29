@@ -495,6 +495,21 @@ public class ListTest {
         assertSame("Not same object returned from takeWhile", EXPECTED_RESULT, actualResult);
     }
 
+    @Test
+    public void testForall() {
+
+        final int LIMIT = 10;
+
+        // Given a list of integers
+        final List<Integer> list = rangeOf(0, LIMIT);
+
+        // When all elements match a predicate
+        final boolean actualResult = list.forall(i -> i < LIMIT);
+
+        // Then forall() returns true
+        assertTrue("forall() returned false while all elements matched predicate", actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

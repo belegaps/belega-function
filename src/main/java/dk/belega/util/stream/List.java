@@ -221,6 +221,18 @@ public interface List<T> {
         public List<T> takeWhile(Predicate<? super T> predicate) {
             return this;
         }
+
+        /**
+         * Return {@code true} if all elements of the list match the given {@code predicate}.
+         *
+         * @param predicate the predicate to use for testing elements
+         * @return {@code true} if all elements match; {@code false} if at least one element doesn't
+         * match
+         */
+        @Override
+        public boolean forall(Predicate<? super T> predicate) {
+            return true;
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -475,6 +487,18 @@ public interface List<T> {
             }
         }
 
+        /**
+         * Return {@code true} if all elements of the list match the given {@code predicate}.
+         *
+         * @param predicate the predicate to use for testing elements
+         * @return {@code true} if all elements match; {@code false} if at least one element doesn't
+         * match
+         */
+        @Override
+        public boolean forall(Predicate<? super T> predicate) {
+            return predicate.test(getHead()) && getTail().forall(predicate);
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////
         // Implementation
 
@@ -712,4 +736,13 @@ public interface List<T> {
      * @return list of initial elements satifying predicate
      */
     List<T> takeWhile(Predicate<? super T> predicate);
+
+    /**
+     * Return {@code true} if all elements of the list match the given {@code predicate}.
+     *
+     * @param predicate the predicate to use for testing elements
+     * @return {@code true} if all elements match; {@code false} if at least one element doesn't
+     * match
+     */
+    boolean forall(Predicate<? super T> predicate);
 }
