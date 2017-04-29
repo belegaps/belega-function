@@ -422,6 +422,46 @@ public class ListTest {
         assertEquals(SOME_VALUE.length(), characterList.getLength());
     }
 
+    @Test
+    public void testTake() {
+
+        final List<Integer> EXPECTED_RESULT = rangeOf(37, 73);
+
+        // Given a list of integers
+        final List<Integer> list = EXPECTED_RESULT.append(rangeOf(1, 10));
+
+        // When taking the initial elements
+        final List<Integer> actualResult = list.take(EXPECTED_RESULT.getLength());
+
+        // Then the result matches the initial elements of the list
+        assertEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    @Test
+    public void testTakeZero() {
+
+        // Given a list of integers
+        final List<Integer> list = rangeOf(0, 10);
+
+        // When taking zero elements
+        final List<Integer> actualResult = list.take(0);
+
+        // Then the result is the nil list
+        assertTrue("non-nil list returned by taking zero elements", actualResult.isNil());
+    }
+
+    @Test
+    public void testTakeTooMany() {
+
+        final List<Integer> EXPECTED_RESULT = rangeOf(0, 10);
+
+        // When taking more elements than are in the list
+        final List<Integer> actualResult = EXPECTED_RESULT.take(EXPECTED_RESULT.getLength() + 1);
+
+        // Then the result is the list itself
+        assertSame(EXPECTED_RESULT, actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 

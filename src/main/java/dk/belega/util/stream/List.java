@@ -198,6 +198,17 @@ public interface List<T> {
         public <B, R> List<R> zipWith(List<B> that, BiFunction<? super T, ? super B, R> mapper) {
             return nil();
         }
+
+        /**
+         * Return a list consisting of the first {@code n} elements of this list.
+         *
+         * @param n the number of elements
+         * @return list of initial elements
+         */
+        @Override
+        public List<T> take(long n) {
+            return this;
+        }
     }
 
     class Cons<T> implements List<T> {
@@ -406,6 +417,28 @@ public interface List<T> {
             return that.isNil() ? nil() :
                     cons(mapper.apply(getHead(), that.getHead()),
                             getTail().zipWith(that.getTail(), mapper));
+        }
+
+        /**
+         * Return a list consisting of the first {@code n} elements of this list.
+         *
+         * @param n the number of elements
+         * @return list of initial elements
+         */
+        @Override
+        public List<T> take(long n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n cannot be negative");
+            } else if (0 == n) {
+                return nil();
+            } else {
+                final List<T> tail = getTail().take(n - 1);
+                if (tail == getTail()) {
+                    return this;
+                } else {
+                    return cons(getHead(), tail);
+                }
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -627,4 +660,11 @@ public interface List<T> {
      * @return list of combined elements
      */
     <B, R> List<R> zipWith(List<B> that, BiFunction<? super T, ? super B, R> mapper);
+
+    /**
+     * Return a list consisting of the first {@code n} elements of this list.
+     * @param n the number of elements
+     * @return list of initial elements
+     */
+    List<T> take(long n);
 }
