@@ -4,7 +4,14 @@ import java.util.*;
 import java.util.function.*;
 
 /**
- * Represents a value of one of two types.
+ * Represents a value of one of two possible types.  An instance of Either is an instance of
+ * either {@link Left} or {@link Right}.
+ * <p>A common use of Either is as an alternative to {@link java.util.Optional} for dealing with
+ * possibly missing values.  In this case, an empty value is replaced by {@code Left}, which can
+ * contain useful information.  Non-empty values are represented by {@code Right}.</p>
+ * <p>Convention dictates that {@code Left} is used for failure and {@code Right} is used for
+ * success.  This convention is applied in the design by standard algebra applying to
+ * {@code Right} values and return {@code Left} values unchanged.</p>
  */
 @SuppressWarnings("WeakerAccess")
 public interface Either<L, R> {
@@ -164,10 +171,26 @@ public interface Either<L, R> {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Construct, copy, destroy
 
+    /**
+     * Factory method for creating a Left value.
+     *
+     * @param left the value
+     * @param <L>  type of left value
+     * @param <R>  type of right value
+     * @return a Left value
+     */
     static <L, R> Either<L, R> left(L left) {
         return new Left<>(left);
     }
 
+    /**
+     * Factory method for creating a Right value.
+     *
+     * @param right the value
+     * @param <L>  type of left value
+     * @param <R>  type of right value
+     * @return a Right value
+     */
     static <L, R> Either<L, R> right(R right) {
         return new Right<>(right);
     }
@@ -175,16 +198,48 @@ public interface Either<L, R> {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    /**
+     * Check if this is a Left.
+     *
+     * @return {@code true} if Left; {@code false} if Right
+     */
     boolean isLeft();
 
+    /**
+     * Return the left value.
+     *
+     * @return left value
+     * @throws UnsupportedOperationException if this is a Right value
+     */
     L getLeft();
 
+    /**
+     * Return the left value.
+     *
+     * @return the value if this is a Left; otherwise an empty value
+     */
     Optional<L> getLeftOption();
 
+    /**
+     * Check if this is a Right.
+     *
+     * @return {@code true} if Right; {@code false} if Left
+     */
     boolean isRight();
 
+    /**
+     * Return the right value.
+     *
+     * @return right value
+     * @throws UnsupportedOperationException if this is a Left value
+     */
     R getRight();
 
+    /**
+     * Return the right value.
+     *
+     * @return the value is this is a Right; otherwise an empty value
+     */
     Optional<R> getRightOption();
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +284,7 @@ public interface Either<L, R> {
     R getOrElse(Supplier<? extends R> that);
 
     /**
-     * Applies the given {@code mapper} function to Right values of {@code this) and {@code that}.
+     * Applies the given {@code mapper} function to Right values of {@code this} and {@code that}.
      * If either value is Left, that value is returned.  If both values are Left, {@code this}
      * Left value is returned.
      *

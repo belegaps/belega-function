@@ -11,7 +11,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * Abstraction of a value stream.
+ * Represents a lazy list, where elements are only evaluated as they are needed.
+ * <p>The stream class also employs memoization, where requested elements are only evaluated
+ * once.  Subsequent requests return the concrete value of the first evaluation.</p>
  */
 @SuppressWarnings("WeakerAccess")
 public interface Stream<T> {
@@ -39,11 +41,6 @@ public interface Stream<T> {
             throw new UnsupportedOperationException("Cannot call getHead() on nil list");
         }
 
-        /**
-         * Return the stream head, if present.
-         *
-         * @return stream head value or empty
-         */
         @Override
         public Optional<T> getHeadOption() {
             return Optional.empty();
@@ -57,84 +54,36 @@ public interface Stream<T> {
         //////////////////////////////////////////////////////////////////////////////////////////
         // Operations
 
-        /**
-         * Map the values of this stream using the given mapping function and return it as a
-         * stream.
-         *
-         * @param mapper the mapping function
-         * @param <R>    the mapped type
-         * @return the mapped stream
-         */
         @Override
         public <R> Stream<R> map(Function<T, R> mapper) {
             return nil();
         }
 
-        /**
-         * Map the elements of this stream into sub-streams and return the combined stream.
-         *
-         * @param mapper the mapping function
-         * @return a combined stream of mapped values
-         */
         @Override
         public <R> Stream<R> flatMap(Function<T, Stream<R>> mapper) {
             return nil();
         }
 
-        /**
-         * Return a stream with combined elements of this and the given stream.
-         *
-         * @param tail the stream to append
-         * @return a combined stream
-         */
         @Override
         public Stream<T> append(Stream<T> tail) {
             return tail;
         }
 
-        /**
-         * Return a stream with combined elements of this and the stream returned by the given
-         * supplier.
-         *
-         * @param tail the supplier of the appended stream
-         * @return a combined stream
-         */
         @Override
         public Stream<T> append(Supplier<Stream<T>> tail) {
             return tail.get();
         }
 
-        /**
-         * Fold the elements of the stream into a single value.
-         *
-         * @param seed      the seed value
-         * @param collector the function combining elements
-         * @return the combined result
-         */
         @Override
         public <R> R foldLeft(R seed, BiFunction<R, T, R> collector) {
             return seed;
         }
 
-        /**
-         * Filter the stream elements using the given predicate.
-         *
-         * @param predicate the predicate for the filter
-         * @return a filtered stream
-         */
         @Override
         public Stream<T> filter(Predicate<T> predicate) {
             return nil();
         }
 
-        /**
-         * Skip the initial n elements of the stream.  If the stream contains less than n elements,
-         * then the return value is an empty stream.
-         *
-         * @param n the non-negative number of elements to skip
-         * @return always return itself (the nil stream)
-         * @throws IllegalArgumentException if n is negative
-         */
         @Override
         public Stream<T> skip(int n) {
             if (n < 0) {
@@ -143,13 +92,6 @@ public interface Stream<T> {
             return this;
         }
 
-        /**
-         * Return a stream containing, at most, the first n elements of this stream.
-         *
-         * @param n the maximum number of elements to take
-         * @return a stream containing the first n elements
-         * @throws IllegalArgumentException if n is negative
-         */
         @Override
         public Stream<T> take(int n) {
             if (n < 0) {
@@ -199,11 +141,6 @@ public interface Stream<T> {
             return head.get();
         }
 
-        /**
-         * Return the stream head, if present.
-         *
-         * @return stream head value or empty
-         */
         @Override
         public Optional<T> getHeadOption() {
             return Optional.of(getHead());
@@ -217,71 +154,31 @@ public interface Stream<T> {
         //////////////////////////////////////////////////////////////////////////////////////////
         // Operations
 
-        /**
-         * Map the values of this stream using the given mapping function and return it as a
-         * stream.
-         *
-         * @param mapper the mapping function
-         * @param <R>    the mapped type
-         * @return the mapped stream
-         */
         @Override
         public <R> Stream<R> map(Function<T, R> mapper) {
             return cons(() -> mapper.apply(getHead()), () -> getTail().map(mapper));
         }
 
-        /**
-         * Map the elements of this stream into sub-streams and return the combined stream.
-         *
-         * @param mapper the mapping function
-         * @return a combined stream of mapped values
-         */
         @Override
         public <R> Stream<R> flatMap(Function<T, Stream<R>> mapper) {
             return mapper.apply(getHead()).append(() -> getTail().flatMap(mapper));
         }
 
-        /**
-         * Return a stream with combined elements of this and the given stream.
-         *
-         * @param tail the stream to append
-         * @return a combined stream
-         */
         @Override
         public Stream<T> append(Stream<T> tail) {
             return cons(this::getHead, () -> getTail().append(tail));
         }
 
-        /**
-         * Return a stream with combined elements of this and the stream returned by the given
-         * supplier.
-         *
-         * @param tail the supplier of the appended stream
-         * @return a combined stream
-         */
         @Override
         public Stream<T> append(Supplier<Stream<T>> tail) {
             return cons(this::getHead, () -> getTail().append(tail));
         }
 
-        /**
-         * Fold the elements of the stream into a single value.
-         *
-         * @param seed      the seed value
-         * @param collector the function combining elements
-         * @return the combined result
-         */
         @Override
         public <R> R foldLeft(R seed, BiFunction<R, T, R> collector) {
             return getTail().foldLeft(collector.apply(seed, getHead()), collector);
         }
 
-        /**
-         * Filter the stream elements using the given predicate.
-         *
-         * @param predicate the predicate for the filter
-         * @return a filtered stream
-         */
         @Override
         public Stream<T> filter(Predicate<T> predicate) {
             if (predicate.test(getHead())) {
@@ -291,14 +188,6 @@ public interface Stream<T> {
             }
         }
 
-        /**
-         * Skip the initial n elements of the stream.  If the stream contains less than n elements,
-         * then the return value is an empty stream.
-         *
-         * @param n the non-negative number of elements to skip
-         * @return the stream of elements, starting with element n+1
-         * @throws IllegalArgumentException if n is negative
-         */
         @Override
         public Stream<T> skip(int n) {
             if (n < 0) {
@@ -310,13 +199,6 @@ public interface Stream<T> {
             }
         }
 
-        /**
-         * Return a stream containing, at most, the first n elements of this stream.
-         *
-         * @param n the maximum number of elements to take
-         * @return a stream containing the first n elements
-         * @throws IllegalArgumentException if n is negative
-         */
         @Override
         public Stream<T> take(int n) {
             if (n < 0) {
@@ -403,6 +285,10 @@ public interface Stream<T> {
 
     /**
      * Map the values of this stream using the given mapping function and return it as a stream.
+     *
+     * @param mapper the mapping function
+     * @param <R>    the return type of the mapping function
+     * @return stream of mapped values
      */
     <R> Stream<R> map(Function<T, R> mapper);
 
@@ -474,6 +360,7 @@ public interface Stream<T> {
 
     /**
      * Return a stream containing, at most, the first n elements of this stream.
+     *
      * @param n the maximum number of elements to take
      * @return a stream containing the first n elements
      * @throws IllegalArgumentException if n is negative
