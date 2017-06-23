@@ -63,4 +63,34 @@ public class EitherTest {
         } catch (UnsupportedOperationException ignored) {
         }
     }
+
+    @Test
+    public void testMap() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // Given a right value
+        final Either<?, String> right = Either.right(EXPECTED_RESULT.toString());
+
+        // When mapping the value
+        final Either<?, Integer> actualResult = right.map(Integer::parseInt);
+
+        // Then the result is the mapped right value
+        assertEquals(EXPECTED_RESULT, actualResult.getRight());
+    }
+
+    @Test
+    public void testMapOnLeft() {
+
+        final NumberFormatException EXPECTED_RESULT = new NumberFormatException();
+
+        // Given a left value
+        Either<Exception, String> left = Either.left(EXPECTED_RESULT);
+
+        // When mapping the value
+        final Either<Exception, Integer> actualResult = left.map(Integer::parseInt);
+
+        // Then the result is the same left value
+        assertSame(EXPECTED_RESULT, actualResult.getLeft());
+    }
 }
