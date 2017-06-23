@@ -166,12 +166,12 @@ public interface Stream<T> {
 
         @Override
         public Stream<T> append(Stream<T> tail) {
-            return cons(this::getHead, () -> getTail().append(tail));
+            return cons(head, () -> getTail().append(tail));
         }
 
         @Override
         public Stream<T> append(Supplier<Stream<T>> tail) {
-            return cons(this::getHead, () -> getTail().append(tail));
+            return cons(head, () -> getTail().append(tail));
         }
 
         @Override
@@ -182,7 +182,7 @@ public interface Stream<T> {
         @Override
         public Stream<T> filter(Predicate<T> predicate) {
             if (predicate.test(getHead())) {
-                return cons(this::getHead, () -> getTail().filter(predicate));
+                return cons(head, () -> getTail().filter(predicate));
             } else {
                 return getTail().filter(predicate);
             }
@@ -206,7 +206,7 @@ public interface Stream<T> {
             } else if (0 == n) {
                 return nil();
             } else {
-                return cons(this::getHead, () -> getTail().take(n - 1));
+                return cons(head, () -> getTail().take(n - 1));
             }
         }
     }
