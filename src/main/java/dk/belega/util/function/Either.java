@@ -65,8 +65,8 @@ public interface Either<L, R> {
         }
 
         @Override
-        public <T, U> Either<L, R> map2(Either<L, T> that, BiFunction<R, T, U> mapper) {
-            return null;
+        public <T, U> Either<L, U> map2(Either<L, T> that, BiFunction<R, T, U> mapper) {
+            return left(left);
         }
     }
 
@@ -126,8 +126,8 @@ public interface Either<L, R> {
         }
 
         @Override
-        public <T, U> Either<L, R> map2(Either<L, T> that, BiFunction<R, T, U> mapper) {
-            return null;
+        public <T, U> Either<L, U> map2(Either<L, T> that, BiFunction<R, T, U> mapper) {
+            return that.map(r -> mapper.apply(right, r));
         }
     }
 
@@ -186,5 +186,17 @@ public interface Either<L, R> {
      */
     <T> Either<T, R> orElse(Function<L, Either<T, R>> mapper);
 
-    <T, U> Either<L, R> map2(Either<L, T> that, BiFunction<R, T, U> mapper);
+    /**
+     * Applies the given {@code mapper} function to Right values of {@code this) and {@code that}.
+     * If either value is Left, that value is returned.  If both values are Left, {@code this}
+     * Left value is returned.
+     *
+     * @param that the other value
+     * @param mapper the mapping function
+     * @param <T> the value type of {@code that value}
+     * @param <U> the return type of the {@code mapper} function
+     * @return a Right value containing the result of the mapper function, if both values are
+     * Right; otherwise the Left value of {@code this} or {@code that}
+     */
+    <T, U> Either<L, U> map2(Either<L, T> that, BiFunction<R, T, U> mapper);
 }

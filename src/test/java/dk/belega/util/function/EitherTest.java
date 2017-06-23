@@ -187,6 +187,74 @@ public class EitherTest {
         assertEquals(EXPECTED_RESULT, actualResult.getRight());
     }
 
+    @Test
+    public void testMap2() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // Given two right values
+        final Either<Exception, Integer> first = Either.right(EXPECTED_RESULT / 2);
+        final Either<Exception, Integer> second = Either.right(EXPECTED_RESULT - first.getRight());
+
+        // When mapping function over both values
+        final Either<Exception, Integer> actualResult = first.map2(second, (a, b) -> a + b);
+
+        // Then the result is a right value
+        assertEquals(EXPECTED_RESULT, actualResult.getRight());
+    }
+
+    @Test
+    public void testMap2OnThisLeft() {
+
+        final Exception EXPECTED_RESULT = new NumberFormatException();
+
+        // Given a left value
+        final Either<Exception, Integer> first = Either.left(EXPECTED_RESULT);
+
+        // And a right value
+        final Either<Exception, Integer> second = Either.right(73);
+
+        // When mapping function over both values
+        final Either<Exception, Integer> actualResult = first.map2(second, (a, b) -> a + b);
+
+        // Then the return value is the left value
+        assertSame(EXPECTED_RESULT, actualResult.getLeft());
+    }
+
+    @Test
+    public void testMap2OnThatLeft() {
+
+        final Exception EXPECTED_RESULT = new NumberFormatException();
+
+        // Given a right value
+        final Either<Exception, Integer> first = Either.right(73);
+
+        // And a left value
+        final Either<Exception, Integer> second = Either.left(EXPECTED_RESULT);
+
+        // When mapping function over both values
+        final Either<Exception, Integer> actualResult = first.map2(second, (a, b) -> a + b);
+
+        // Then the return value is the left value
+        assertSame(EXPECTED_RESULT, actualResult.getLeft());
+    }
+
+    @Test
+    public void testMap2OnBothLeft() {
+
+        final Exception EXPECTED_RESULT = new NumberFormatException();
+
+        // Given two left value
+        final Either<Exception, Integer> first = Either.left(EXPECTED_RESULT);
+        final Either<Exception, Integer> second = Either.left(new NumberFormatException());
+
+        // When mapping function over both values
+        final Either<Exception, Integer> actualResult = first.map2(second, (a, b) -> a + b);
+
+        // Then the return value is the first left value
+        assertSame(EXPECTED_RESULT, actualResult.getLeft());
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
