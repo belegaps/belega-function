@@ -6,7 +6,7 @@ import java.util.function.Supplier;
  * Lazy variable initialization.
  */
 @SuppressWarnings("WeakerAccess")
-public class Lazy<T> {
+public class Lazy<T> implements Supplier<T> {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Data
@@ -98,6 +98,7 @@ public class Lazy<T> {
      *
      * @return the variable value.
      */
+    @Override
     public T get() {
 
         if (!isInitialized()) {
