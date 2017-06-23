@@ -138,6 +138,55 @@ public class EitherTest {
         assertSame(EXPECTED_RESULT, actualResult.getLeft());
     }
 
+    @Test
+    public void testOrElse() {
+
+        final String EXPECTED_RESULT = "some text";
+
+        // Given a left value
+        final Either<Exception, ?> left = Either.left(new NumberFormatException(EXPECTED_RESULT));
+
+        // When flat mapping on left
+        final Either<String, ?> actualResult = left.orElse(e -> Either.left(e.getMessage()));
+
+        // Then the result is the converted value
+        assertEquals(EXPECTED_RESULT, actualResult.getLeft());
+    }
+
+    @Test
+    public void testOrElseMappingRight() {
+
+        final Integer EXPECTED_RESULT = 42;
+
+        // Given a left value
+        final Either<Exception, Integer> left =
+                Either.left(new NumberFormatException());
+
+        // When flat mapping on left with success
+        final Either<Exception, Integer> actualResult =
+                left.orElse(e -> Either.right(EXPECTED_RESULT));
+
+        // Then the result is the converted value
+        assertSame(EXPECTED_RESULT, actualResult.getRight());
+    }
+
+    @Test
+    public void testOrElseOnRight() {
+
+        final String EXPECTED_RESULT = "some text";
+
+        // Given a right value
+        final Either<Exception, String> right =
+                Either.right(EXPECTED_RESULT);
+
+        // When flat-mapping on left
+        final Either<String, String> actualResult =
+                right.orElse(e -> Either.left(e.getMessage()));
+
+        // Then the result is the same right value
+        assertEquals(EXPECTED_RESULT, actualResult.getRight());
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
