@@ -1,4 +1,4 @@
-package dk.belega.util.stream;
+package dk.belega.util.function;
 
 import java.util.HashMap;
 import java.util.Optional;

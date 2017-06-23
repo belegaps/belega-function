@@ -1,4 +1,4 @@
-package dk.belega.util.stream;
+package dk.belega.util.function;
 
 import org.junit.Test;
 
