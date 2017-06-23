@@ -246,7 +246,7 @@ public class EitherTest {
 
         // Given two left value
         final Either<Exception, Integer> first = Either.left(EXPECTED_RESULT);
-        final Either<Exception, Integer> second = Either.left(new NumberFormatException());
+        final Either<Exception, Integer> second = Either.left(new NullPointerException());
 
         // When mapping function over both values
         final Either<Exception, Integer> actualResult = first.map2(second, (a, b) -> a + b);
@@ -255,13 +255,41 @@ public class EitherTest {
         assertSame(EXPECTED_RESULT, actualResult.getLeft());
     }
 
+    @Test
+    public void testGetOrElse() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // When calling getOrElse on a right value
+        final Integer actualResult =
+                Either.right(EXPECTED_RESULT).getOrElse(() -> 100 - EXPECTED_RESULT);
+
+        // Then the right value is returned
+        assertEquals(EXPECTED_RESULT, actualResult);
+    }
+
+    @Test
+    public void testGetOrElseOnLeft() {
+
+        final Integer EXPECTED_RESULT = 73;
+
+        // Given a left value
+        Either<Exception, Integer> left = Either.left(new NumberFormatException());
+
+        // When calling getOrElse()
+        final Integer actualResult = left.getOrElse(() -> EXPECTED_RESULT);
+
+        // Then the right value is returned
+        assertEquals(EXPECTED_RESULT, actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
 
     private static Either<Exception, Integer> parseInt(String str) {
         try {
             return Either.right(Integer.parseInt(str));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return Either.left(e);
         }
     }
