@@ -20,7 +20,13 @@ public class EitherTest {
         // Given a left value
         final Either<String, ?> left = Either.left(EXPECTED_RESULT);
 
-        // Then getLeftOption() returns the value
+        // Then isLeft() returns true
+        assertTrue("expected true from isLeft()", left.isLeft());
+
+        // And isRight() returns false
+        assertFalse("expected false from isRight()", left.isRight());
+
+        // And getLeftOption() returns the value
         assertTrue("expected value from getLeftOption()", left.getLeftOption().isPresent());
         assertEquals(EXPECTED_RESULT, left.getLeftOption().get());
 
@@ -46,7 +52,13 @@ public class EitherTest {
         // Given a left value
         final Either<?, Integer> right = Either.right(EXPECTED_RESULT);
 
-        // Then getRightOption() returns the value
+        // Then isRight() returns true
+        assertTrue("expected true from isRight()", right.isRight());
+
+        // And isLeft() returns false
+        assertFalse("expected false from isLeft()", right.isLeft());
+
+        // And getRightOption() returns the value
         assertTrue("expected value from getRightOption()", right.getRightOption().isPresent());
         assertEquals(EXPECTED_RESULT, right.getRightOption().get());
 

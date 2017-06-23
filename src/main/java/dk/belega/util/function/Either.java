@@ -30,6 +30,11 @@ public interface Either<L, R> {
         // Properties
 
         @Override
+        public boolean isLeft() {
+            return true;
+        }
+
+        @Override
         public L getLeft() {
             return left;
         }
@@ -37,6 +42,11 @@ public interface Either<L, R> {
         @Override
         public Optional<L> getLeftOption() {
             return Optional.of(left);
+        }
+
+        @Override
+        public boolean isRight() {
+            return false;
         }
 
         @Override
@@ -93,6 +103,11 @@ public interface Either<L, R> {
         // Properties
 
         @Override
+        public boolean isLeft() {
+            return false;
+        }
+
+        @Override
         public L getLeft() {
             throw new UnsupportedOperationException("calling getLeft() on right value");
         }
@@ -100,6 +115,11 @@ public interface Either<L, R> {
         @Override
         public Optional<L> getLeftOption() {
             return Optional.empty();
+        }
+
+        @Override
+        public boolean isRight() {
+            return true;
         }
 
         @Override
@@ -155,9 +175,13 @@ public interface Either<L, R> {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    boolean isLeft();
+
     L getLeft();
 
     Optional<L> getLeftOption();
+
+    boolean isRight();
 
     R getRight();
 
