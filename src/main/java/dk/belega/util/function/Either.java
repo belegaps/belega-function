@@ -56,7 +56,7 @@ public interface Either<L, R> {
 
         @Override
         public <T> Either<L, T> flatMap(Function<R, Either<L, T>> mapper) {
-            return null;
+            return left(left);
         }
 
         @Override
@@ -117,7 +117,7 @@ public interface Either<L, R> {
 
         @Override
         public <T> Either<L, T> flatMap(Function<R, Either<L, T>> mapper) {
-            return null;
+            return mapper.apply(right);
         }
 
         @Override
@@ -166,6 +166,14 @@ public interface Either<L, R> {
      */
     <T> Either<L, T> map(Function<R, T> mapper);
 
+    /**
+     * Applies the given {@code mapper} function to Right values and returns the result.  If Left,
+     * the value is returned unchanged.
+     *
+     * @param mapper the mapping function
+     * @param <T>    the return type of the mapping function
+     * @return Result of mapping Right value; or Left unchanged
+     */
     <T> Either<L, T> flatMap(Function<R, Either<L, T>> mapper);
 
     <T> Either<T, R> orElse(Function<L, Either<T, R>> mapper);
