@@ -85,7 +85,7 @@ public class Lazy<T> implements Supplier<T> {
      *
      * @return {@code true} when initialized; {@code false} when not.
      */
-    boolean isInitialized() {
+    public synchronized boolean isInitialized() {
         return initialized;
     }
 
@@ -101,9 +101,9 @@ public class Lazy<T> implements Supplier<T> {
     @Override
     public T get() {
 
-        if (!isInitialized()) {
+        if (!initialized) {
             synchronized (this) {
-                if (!isInitialized()) {
+                if (!initialized) {
                     //noinspection ConstantConditions
                     value = supplier.get();
                     initialized = true;
