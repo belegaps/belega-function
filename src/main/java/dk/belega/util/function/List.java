@@ -580,6 +580,21 @@ public interface List<T> {
         return cons(unit, nil());
     }
 
+    /**
+     * Return a list containing the elements given as arguments.
+     * @param elements the list elements
+     * @param <T> the type of the list elements
+     * @return list of given elements
+     */
+    @SafeVarargs
+    static <T> List<T> of(T... elements) {
+        List<T> result = List.nil();
+        for (int i = elements.length - 1; i >= 0; --i) {
+            result = List.cons(elements[i], result);
+        }
+        return result;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Properties
 

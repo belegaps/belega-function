@@ -584,8 +584,30 @@ public class ListTest {
         assertEquals(listOf(EXPECTED_RESULT), actualResult);
     }
 
+    @Test
+    public void testOf() {
+
+        Integer[] EXPECTED_RESULT = {
+                1,2,3,4,5,6,7,8,9,10
+        };
+
+        // When creating a list from an array
+        final List<Integer> actualResult = List.of(EXPECTED_RESULT);
+
+        // Then the list contains all elements from the array, in order
+        assertListElements(EXPECTED_RESULT, actualResult);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation
+
+    private static <T> void assertListElements(T[] expected, List<T> actual) {
+        for (T value : expected) {
+            assertEquals(value, actual.getHead());
+            actual = actual.getTail();
+        }
+        assertTrue(actual.isNil());
+    }
 
     private List<Character> listOf(char[] elements) {
         List<Character> list = List.nil();
