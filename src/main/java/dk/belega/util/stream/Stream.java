@@ -99,6 +99,11 @@ public interface Stream<T> {
             }
             return this;
         }
+
+        @Override
+        public Stream<T> takeWhile(Predicate<? super T> predicate) {
+            return this;
+        }
     }
 
     /**
@@ -208,6 +213,14 @@ public interface Stream<T> {
             } else {
                 return cons(head, () -> getTail().take(n - 1));
             }
+        }
+
+        @Override
+        public Stream<T> takeWhile(Predicate<? super T> predicate) {
+            if (predicate.test(head.get()))
+                return cons(head, () -> getTail().takeWhile(predicate));
+            else
+                return nil();
         }
     }
 
@@ -366,4 +379,12 @@ public interface Stream<T> {
      * @throws IllegalArgumentException if n is negative
      */
     Stream<T> take(int n);
+
+    /**
+     * Return a stream containing all leading elements of this stream satisfying the given
+     * predicate.
+     * @param predicate the predicate
+     * @return the stream of satisfying elements
+     */
+    Stream<T> takeWhile(Predicate<? super T> predicate);
 }
