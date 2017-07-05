@@ -1,9 +1,11 @@
 package dk.belega.util.stream;
 
+import dk.belega.util.function.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -61,5 +63,28 @@ public class StreamsTest extends AbstractTest {
         } catch (ArrayIndexOutOfBoundsException ignored) {
             // And throws an exception
         }
+    }
+
+    @Test
+    public void testOfEmptyList() {
+
+        // When creating a stream from a nil list
+        Stream<Integer> stream = Streams.of(List.nil());
+
+        // Then the result is a nil stream
+        assertTrue(stream.isNil());
+    }
+
+    @Test
+    public void testOfList() {
+
+        final List<Character> EXPECTED_RESULT =
+                List.of("the quick brown bug jumped over the lazy firewall");
+
+        // When creating a stream from a list
+        final Stream<Character> stream = Streams.of(EXPECTED_RESULT);
+
+        // Then the stream contains the same elements in the same order
+        assertStreamEquals(EXPECTED_RESULT, stream);
     }
 }

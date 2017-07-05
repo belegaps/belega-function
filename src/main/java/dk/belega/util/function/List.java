@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 /**
  * Abstraction of an immutable list
  */
-public interface List<T> {
+public interface List<T> extends Traversable<T> {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Types, constants
@@ -582,8 +582,9 @@ public interface List<T> {
 
     /**
      * Return a list containing the elements given as arguments.
+     *
      * @param elements the list elements
-     * @param <T> the type of the list elements
+     * @param <T>      the type of the list elements
      * @return list of given elements
      */
     @SafeVarargs
@@ -595,6 +596,30 @@ public interface List<T> {
         return result;
     }
 
+    /**
+     * Return a list containing the {@code elements} given as arguments.
+     *
+     * @param elements the list elements
+     * @return list of given elements
+     */
+    static List<Character> of(char[] elements) {
+        List<Character> result = List.nil();
+        for (int i = elements.length - 1; i >= 0; --i) {
+            result = List.cons(elements[i], result);
+        }
+        return result;
+    }
+
+    /**
+     * Return a list containing the characters of the given string.
+     *
+     * @param elements the list elements
+     * @return list of given elements
+     */
+    static List<Character> of(String elements) {
+        return of(elements.toCharArray());
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Properties
 
@@ -603,6 +628,7 @@ public interface List<T> {
      *
      * @return {@code true} if nil; {@code false} if not
      */
+    @Override
     boolean isNil();
 
 
@@ -611,6 +637,7 @@ public interface List<T> {
      *
      * @return list head value or empty
      */
+    @Override
     Optional<T> getHeadOption();
 
     /**
@@ -618,7 +645,7 @@ public interface List<T> {
      *
      * @return the head value.
      */
-    @SuppressWarnings("UnusedReturnValue")
+    @Override
     T getHead();
 
     /**
@@ -634,6 +661,7 @@ public interface List<T> {
      *
      * @return the list tail
      */
+    @Override
     List<T> getTail();
 
     /**
@@ -815,7 +843,7 @@ public interface List<T> {
      * @param <Z>      the return value of the operator
      * @return list of cumulative results
      */
-    default <Z> List<Z> scanRight(Z z, BiFunction<T,Z,Z> operator) {
+    default <Z> List<Z> scanRight(Z z, BiFunction<T, Z, Z> operator) {
         return foldRight(
                 List.unit(z),
                 (h, l) -> cons(operator.apply(h, l.getHead()), l));

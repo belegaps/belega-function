@@ -1,5 +1,7 @@
 package dk.belega.util.stream;
 
+import dk.belega.util.function.*;
+
 /**
  * Utility functions for {@link Stream}s.
  */
@@ -43,5 +45,16 @@ public class Streams {
                     () -> elements[offset],
                     () -> of(elements, offset + 1, length - 1));
         }
+    }
+
+    /**
+     * Return a stream containing the elements of the given list.
+     *
+     * @param list the list of items
+     * @param <T>  the element type of the list
+     * @return stream of elements from list
+     */
+    public static <T> Stream<T> of(List<? extends T> list) {
+        return list.isNil() ? Stream.nil() : Stream.cons(list::getHead, () -> of(list.getTail()));
     }
 }

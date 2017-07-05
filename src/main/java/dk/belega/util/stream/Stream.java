@@ -1,6 +1,6 @@
 package dk.belega.util.stream;
 
-import dk.belega.util.function.Lazy;
+import dk.belega.util.function.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * once.  Subsequent requests return the concrete value of the first evaluation.</p>
  */
 @SuppressWarnings("WeakerAccess")
-public interface Stream<T> {
+public interface Stream<T> extends Traversable<T> {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Types, constants
@@ -270,6 +270,7 @@ public interface Stream<T> {
      *
      * @return {@code true} if nil; {@code false} if not
      */
+    @Override
     boolean isNil();
 
     /**
@@ -277,6 +278,7 @@ public interface Stream<T> {
      *
      * @return the head value.
      */
+    @Override
     T getHead();
 
     /**
@@ -284,6 +286,7 @@ public interface Stream<T> {
      *
      * @return stream head value or empty
      */
+    @Override
     Optional<T> getHeadOption();
 
     /**
@@ -291,6 +294,7 @@ public interface Stream<T> {
      *
      * @return the stream tail.
      */
+    @Override
     Stream<T> getTail();
 
     //////////////////////////////////////////////////////////////////////////////////////////////
